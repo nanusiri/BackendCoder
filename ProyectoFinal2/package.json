@@ -2,9 +2,9 @@
   "name": "proyectofinal2",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "start": {
-    "test": "nodemon src/app.js"
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon src/app.js"
   },
   "keywords": [],
   "author": "",

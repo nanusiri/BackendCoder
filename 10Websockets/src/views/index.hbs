@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Aplicacion de Socket IO</h1>
+    <input type="text" id="mensaje" placeholder="Escribe un mensaje">
+    <button id="btn-send" onclick="enviarMensaje()">Enviar</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+        //Conexion con socket (Una buena practica seria tener un js aparte pero con el profe lo hicimos aca)
+        const socket = io()
+
+        function enviarMensaje() {
+            //Obtener mensaje desde el input
+            const mensaje = document.getElementById('mensaje').value
+            //Enviar mensaje al servidor
+            socket.emit('mensaje', mensaje)
+        }
+
+        const boton = document.getElementById("btn-send")
+        boton.addEventListener("click", () => {
+            console.log("Click en el boton")
+        })
+
+        //Escuchar evento mensaje desde el servidor por co
+        socket.on("mensaje", (data) => {
+            console.log(`Mensaje recibido desde el servidor: ${data}`)
+        })
+    </script>
+</body>
+
+</html>

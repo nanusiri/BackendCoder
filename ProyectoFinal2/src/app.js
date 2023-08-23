@@ -25,6 +25,11 @@ io.on("connection", (socket) => {
     console.log("Nuevo cliente conectado")
 
     socket.on("newProduct", (product) => {
+        if (product == '') {
+
+            return
+
+        }
         products.push(product)
         io.emit("newProduct", product)
     })

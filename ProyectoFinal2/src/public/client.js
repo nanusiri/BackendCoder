@@ -1,5 +1,15 @@
 const socket = io()
 
+
+/*document.getElementById("boton").addEventListener("click", (e) => {
+    e.preventDefault
+    const productInput = document.getElementById("productInput")
+    const product = productInput.value
+
+    socket.emit("newProduct", product)
+})*/
+
+
 const boton = document.getElementById("boton")
 boton.addEventListener("click", sendProduct())
 
@@ -19,6 +29,13 @@ socket.on("productList", (products) => {
     const productList = document.getElementById("productList")
     productList.innerHTML = ""
     products.forEach((prod) => {
-        appendProduct(prod.producto)
+        appendProduct(prod)
     });
+})
+
+socket.on("newProduct", (products) => {
+
+    const productList = document.getElementById("productList")
+
+    productList.insertAdjacentHTML("beforeend", `<p> Product: ${products}</p>`)
 })

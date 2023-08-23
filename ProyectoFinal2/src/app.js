@@ -26,7 +26,7 @@ io.on("connection", (socket) => {
 
     socket.on("newProduct", (product) => {
         products.push(product)
-        io.emit("newProduct", { producto: product })
+        io.emit("newProduct", product)
     })
 })
 

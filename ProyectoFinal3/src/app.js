@@ -28,15 +28,19 @@ const environment = async () => {
     console.log(result)*/
 
     /*let products = await productModel.aggregate([
-        { $match: { category: "bazar" } },
-        { $group: { _id: "$name", totalStock: { $sum: "$stock" } } }
+
+        { $match: { productCategory: "bazar" } },
+
+        { $group: { _id: "$productTitle", totalStock: { $sum: "$productStock" } } }
+
     ])
+
     console.log(products)*/
 
-    /*let products = await productModel.paginate({ category: "electronicos" }, { limit: 1, page: 1 })
+    /*let products = await productModel.paginate({ productCategory: "electronicos" }, { limit: 1, page: 1 })
     console.log(products)*/
 }
 environment();
 
-app.use("/api/cart", cartRouter);
-app.use("/api/product", productRouter);
+app.use("/", cartRouter);
+app.use("/", productRouter);

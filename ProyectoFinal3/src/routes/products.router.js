@@ -7,55 +7,62 @@ const { productModel } = require('../models/product.model')
 const products = []
 
 router.get('/api/products', async (req, res) => {
-    const { limit = 10, page = 1, sort, query } = req.query
-
-    const options = {
-        page: parseInt(page),
-        limit: parseInt(limit),
-        customLabels: {
-            docs: 'payload',
-            totalDocs: 'totalProducts',
-            page: 'currentPage',
-            totalPages: 'totalPages',
-            hasNextPage: 'hasNextPage',
-            hasPrevPage: 'hasPrevPage',
-            prevPage: 'prevPage',
-            nextPage: 'nextPage',
-        },
-    };
-
-    const queryOptions = {}
-
-    if (query) {
-        queryOptions.productCategory = query.toLowerCase();
-    }
-
-    if (sort) {
-        options.sort = { productPrice: sort === 'asc' ? 1 : -1 };
-    }
 
     try {
-        const result = await productModel.paginate(queryOptions, options);
+        const { limit = 10, page = 1, sort, query } = req.query
 
-        const response = {
-            status: 'success',
-            payload: result.payload,
-            totalProducts: result.totalProducts,
-            currentPage: result.currentPage,
-            totalPages: result.totalPages,
-            hasNextPage: result.hasNextPage,
-            hasPrevPage: result.hasPrevPage,
-            prevPage: result.prevPage,
-            nextPage: result.nextPage,
-        };
+        if (isNaN(limit && page)) {
+            return res.status(404).send({ status: "Error", error: "Limit y page tienen que ser un numero" })
+        }
 
-        res.json(response);
+        const options = {
+            limit: parseInt(limit),
+            page: parseInt(page)
+        }
+
+        const queryOptions = {}
+
+        if (query) {
+            queryOptions.productCategory = query
+        }
+
+        const sortOptions = {}
+
+        if (sort === 'desc') {
+            sortOptions.productPrice = -1
+        } else if (sort === 'asc') {
+            sortOptions.productPrice = 1
+        }
+
+        if (Object.keys(queryOptions).length === 0 && Object.keys(sortOptions).length === 0) {
+            const products = await productModel.paginate({}, { ...options })
+            console.log(products)
+            return res.send({ result: "success", payload: products })
+        } else if (Object.keys(queryOptions).length === 0) {
+            const products = await productModel.paginate({}, { ...options, sort: sortOptions })
+            console.log(products)
+            return res.send({ result: "success", payload: products })
+        } else if (Object.keys(sortOptions).length === 0) {
+            if (query != "electronicos" && query != "bazar") {
+                return res.status(404).send({ status: "Error", error: "Su query no coincide con nuestra DB" })
+            }
+            const products = await productModel.paginate(queryOptions, { ...options })
+            console.log(products)
+            return res.send({ result: "success", payload: products })
+        } else {
+            if (query != "electronicos" && query != "bazar") {
+                return res.status(404).send({ status: "Error", error: "Su query no coincide con nuestra DB" })
+            }
+            const products = await productModel.paginate(queryOptions, { ...options, sort: sortOptions })
+            console.log(products)
+            return res.send({ result: "success", payload: products })
+        }
+
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        return res.status(500).send({ status: 'error', error: 'Error interno del servidor' });
     }
 
-    res.json({ products })
 })
 
 router.get('/api/products/:pid', (req, res) => {

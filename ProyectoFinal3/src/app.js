@@ -39,6 +39,14 @@ const environment = async () => {
 
     /*let products = await productModel.paginate({ productCategory: "electronicos" }, { limit: 1, page: 1 })
     console.log(products)*/
+
+    /*await cartModel.create({
+        titularCarrito: "Nahuel Sirimarco"
+    })*/
+
+    /*let cart = await cartModel.findById({ _id: "65050d3ba2aad929c4bbfc27" })
+    cart.productos.push({ producto: "65010c928bd6c316cd34a762", quantity: 5 })
+    let result = await cartModel.updateOne({ _id: "65050d3ba2aad929c4bbfc27" }, cart)*/
 }
 environment();
 

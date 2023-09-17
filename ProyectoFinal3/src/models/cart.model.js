@@ -9,8 +9,9 @@ const cartSchema = new mongoose.Schema({
             {
                 producto: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: "courses"
-                }
+                    ref: "products"
+                },
+                quantity: { type: Number }
             }
         ],
         default: []

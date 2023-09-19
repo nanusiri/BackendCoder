@@ -74,7 +74,10 @@ router.put('/api/carts/:cid', async (req, res) => {
             return res.status(404).json({ error: 'Carrito no encontrado' })
         }
 
-        cart.productos = { ...cart.productos, ...updateFields }
+        cart.productos = {}
+        cart.productos = { ...updateFields.productos }
+
+        //cart.productos = { ...cart.productos, ...updateFields }
 
         //cart = updateFields
 
@@ -156,6 +159,7 @@ router.delete('/api/carts/:cid', async (req, res) => {
         const pid = req.params.pid
 
         const cart = await cartModel.findById({ _id: cid })
+        console.log(cart)
         if (!cart) {
             return res.status(404).json({ error: 'Carrito no encontrado' })
         }

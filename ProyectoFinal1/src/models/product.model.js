@@ -3,10 +3,13 @@ const mongoose = require("mongoose")
 const productCollection = "productos"
 
 const productSchema = new mongoose.Schema({
-    name: { type: String, required: true, max: 200, index: true },
-    precio: { type: Number, required: true, max: 100000 },
-    stock: { type: Number, required: true, max: 1000 },
-    category: { type: String, required: true, max: 200 },
+    productTitle: { type: String, required: true, index: true },
+    productDescription: { type: String, required: true },
+    productCode: { type: Number, required: true },
+    productPrice: { type: Number, required: true },
+    productStatus: { type: Boolean },
+    productStock: { type: Number, required: true },
+    productCategory: { type: String, required: true }
 })
 
 const productModel = mongoose.model(productCollection, productSchema)

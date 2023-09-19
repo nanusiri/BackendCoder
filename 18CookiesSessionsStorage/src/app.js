@@ -80,4 +80,6 @@ app.get("/private", auth, (req, res) => {
     res.send("Eres el admin")
 })
 
+
+
 app.listen(port, () => console.log(`Example app listening on port ${port}`))

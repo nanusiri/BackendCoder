@@ -45,7 +45,7 @@ const environment = async () => {
     })*/
 
     /*let cart = await cartModel.findById({ _id: "65050d3ba2aad929c4bbfc27" })
-    cart.productos.push({ producto: "65010c928bd6c316cd34a762", quantity: 5 })
+    cart.productos.push({ producto: "65010c928bd6c316cd34a75d", quantity: 3 })
     let result = await cartModel.updateOne({ _id: "65050d3ba2aad929c4bbfc27" }, cart)*/
 }
 environment();

@@ -69,19 +69,21 @@ router.put('/api/carts/:cid', async (req, res) => {
         const cid = req.params.cid
         const updateFields = req.body
 
-        const cart = await cartModel.findById({ _id: cid })
+        const cart = await cartModel.findByIdAndUpdate({ _id: cid }, { $set: { productos: { ...updateFields } } }, { new: true })
         if (!cart) {
             return res.status(404).json({ error: 'Carrito no encontrado' })
         }
 
-        cart.productos = {}
-        cart.productos = { ...updateFields.productos }
+        cart.productos[0].id = updateFields.productos
+        //cart.productos = { ...updateFields }
+
+        //console.log(updateFields.productos)
 
         //cart.productos = { ...cart.productos, ...updateFields }
 
         //cart = updateFields
 
-        let result = await cart.save()
+        //let result = await cart.save()
 
         return res.send({ result: "success", payload: cart })
 

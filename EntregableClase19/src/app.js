@@ -1,50 +1,108 @@
 const express = require('express');
-const path = require('path')
-const session = require("express-session")
-const handlebars = require("express-handlebars")
-const sessionRouter = require("./routes/sessions")
-const viewsRouter = require("./routes/views")
-const MongoStore = require("connect-mongo")
+const mongoose = require('mongoose');
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const handlebars = require('express-handlebars');
+const MongoStore = require('connect-mongo');
+const sessionsRouter = require('./routes/sessions');
+const viewsRouter = require('./routes/views');
+const User = require('./models/User');
 
-const port = 8080;
 const app = express();
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
+mongoose.connect('mongodb+srv://nanualejandro:UaQAnwVjBAMsE6PN@coderhouse.brwecw3.mongodb.net/?retryWrites=true&w=majority', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
 
-app.use(express.static(path.join(__dirname, 'views')))
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: "mongodb+srv://nanualejandro:UaQAnwVjBAMsE6PN@coderhouse.brwecw3.mongodb.net/?retryWrites=true&w=majority",
+        mongoUrl: 'mongodb+srv://nanualejandro:UaQAnwVjBAMsE6PN@coderhouse.brwecw3.mongodb.net/?retryWrites=true&w=majority',
         mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-        ttl: 1000
+        ttl: 600,
     }),
-    secret: "coderhouse",
+    secret: 'coderhouse',
     resave: false,
-    saveUninitialized: true
-}))
+    saveUninitialized: true,
+})
+);
 
-/* app.engine("handlebars", handlebars.engine())
-app.set("views", __dirname + "views")
-app.set("view engine", "handlebars") */
-
-
-app.use("/api/sessions", sessionRouter)
-app.use("", viewsRouter)
+app.engine("handlebars", handlebars.engine())
+app.set("views", __dirname + '/views')
+app.set("view engine", "handlebars")
 
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.use('/api/sessions', sessionsRouter);
+app.use('/', viewsRouter);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 
-app.get('/api/sessions/register', (req, res) => {
-    res.sendFile(path.join(__dirname, '/views', 'register.html'))
+/*app.get('/register', (req, res) => {
+    res.render('register')
 })
 
-app.get('/api/sessions/login', (req, res) => {
-    res.sendFile(path.join(__dirname, '/views', 'login.html'))
-})
+app.post('/register', async (req, res) => {
+    let { first_name, last_name, email, age, password } = req.body;
+
+    if (!first_name || !last_name || !email || !age || !password) {
+        return res.status(400).send('Faltan datos.');
+    }
+
+    let user = await User.create({
+        first_name,
+        last_name,
+        email,
+        age,
+        password
+    });
+
+    res.redirect('/login');
+});
+
 
 app.get('/profile', (req, res) => {
-    res.sendFile(path.join(__dirname, '/views', 'profile.html'))
+    if (!req.session.user) {
+        return res.redirect('/login');
+    }
+    const { first_name, last_name, email, age, password } = req.session.user;
+
+    if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
+        return res.render('adminProfile', { first_name, last_name, email, age })
+    }
+
+    res.render('profile', { first_name, last_name, email, age });
+});
+
+app.get('/login', (req, res) => {
+    res.render('login')
 })
+
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await User.findOne({ email, password });
+
+        if (user) {
+            req.session.user = user; // Almacena el usuario en la sesión
+            res.redirect('/profile'); // Redirige al perfil si las credenciales son correctas
+        } else {
+            res.status(401).send('Credenciales inválidas'); // Credenciales incorrectas
+        }
+    } catch (error) {
+        console.error('Error al autenticar usuario:', error);
+        res.status(500).send('Error en el servidor');
+    }
+});
+*/
+
+app.listen(8080, () => {
+    console.log('Servidor en ejecución en el puerto 8080');
+});
+
+

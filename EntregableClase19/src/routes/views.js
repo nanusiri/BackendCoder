@@ -1,13 +1,18 @@
-const express = require("express")
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 
-router.get("/profile", (req, res) => {
+router.get('/profile', (req, res) => {
     if (!req.session.user) {
-        return res.redirect("/api/sessions/login")
+        return res.redirect('/login');
+    }
+    const { first_name, last_name, email, age, password } = req.session.user;
+
+    if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
+        return res.render('adminProfile', { first_name, last_name, email, age })
     }
 
-    const { first_name, last_name, email, age } = req.session.user
-    res.render("profile", { first_name, last_name, email, age })
-})
+    res.render('profile', { first_name, last_name, email, age });
+});
 
-module.exports = router
+
+module.exports = router;

@@ -99,7 +99,13 @@ app.post('/login', async (req, res) => {
         res.status(500).send('Error en el servidor');
     }
 });
-*/
+
+app.post('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (!err) return res.redirect('/login')
+        else return res.send({ status: 'Logout ERROR', body: err })
+    })
+})*/
 
 app.listen(8080, () => {
     console.log('Servidor en ejecución en el puerto 8080');

@@ -44,9 +44,9 @@ const environment = async () => {
         titularCarrito: "Nahuel Sirimarco"
     })*/
 
-    /*let cart = await cartModel.findById({ _id: "65050d3ba2aad929c4bbfc27" })
+    /*let cart = await cartModel.findById({ _id: "6511ff22bc9fa62b2a275118" })
     cart.productos.push({ producto: "65010c928bd6c316cd34a75d", quantity: 3 })
-    let result = await cartModel.updateOne({ _id: "65050d3ba2aad929c4bbfc27" }, cart)*/
+    let result = await cartModel.updateOne({ _id: "6511ff22bc9fa62b2a275118" }, cart)*/
 }
 environment();
 

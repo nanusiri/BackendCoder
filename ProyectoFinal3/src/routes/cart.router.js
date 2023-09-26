@@ -5,17 +5,21 @@ const mongoosePaginate = require('mongoose-paginate-v2')
 const { productModel } = require('../models/product.model')
 const { cartModel } = require('../models/cart.model')
 
-const carts = []
 
-router.post('/api/carts', (req, res) => {
-    const newCart = {
-        id: carts.length + 1,
-        products: []
+router.post('/api/carts', async (req, res) => {
+
+    try {
+        const titular = req.body.titularCarrito
+
+        const cart = await cartModel.create({
+            titularCarrito: titular
+        })
+
+        return res.send({ result: "success", payload: cart })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ status: 'error', error: 'Error interno del servidor' });
     }
-
-    carts.push(newCart)
-
-    res.json(newCart)
 })
 
 router.get('/api/carts/:cid', async (req, res) => {
@@ -26,40 +30,47 @@ router.get('/api/carts/:cid', async (req, res) => {
 
         const cart = await cartModel.findById({ _id: cid })
 
-        if (!cart || Object.keys(cart).length === 0) {
+        if (!cart) {
             return res.status(404).json({ error: 'Carrito no encontrado' })
         }
 
-        return res.json(cart)
+        return res.send({ result: "success", payload: cart })
     } catch (error) {
         console.error(error);
         return res.status(500).send({ status: 'error', error: 'Error interno del servidor' });
     }
 })
 
-router.post('/api/carts/:cid/product/:pid', (req, res) => {
-    const cid = parseInt(req.params.cid)
-    const pid = parseInt(req.params.pid)
-    const quantity = parseInt(req.body.quantity || 1)
+router.post('/api/carts/:cid/product/:pid', async (req, res) => {
 
-    const cart = carts.find(cart => cart.id === cid)
+    try {
+        const cid = req.params.cid
+        const pid = req.params.pid
+        const quantity = parseInt(req.body.quantity || 1)
 
-    if (!cart) {
-        return res.status(404).json({ error: 'Carrito no encontrado' })
+        const cart = await cartModel.findById({ _id: cid })
+
+        if (!cart) {
+            return res.status(404).json({ error: 'Carrito no encontrado' })
+        }
+
+        const productos = cart.productos
+
+        const existingProductIndex = productos.findIndex(objeto => objeto.producto.equals(pid))
+
+        if (existingProductIndex !== -1) {
+            productos[existingProductIndex].quantity += quantity
+        } else {
+            cart.productos.push({ producto: pid, quantity: quantity })
+        }
+
+        await cart.save()
+
+        return res.send({ result: "success", payload: cart })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send({ status: 'error', error: 'Error interno del servidor' });
     }
-
-    const existingProduct = cart.products.find(product => product.id === pid)
-
-    if (existingProduct) {
-        existingProduct.quantity += quantity
-    } else {
-        cart.products.push({
-            id: pid,
-            quantity: quantity
-        })
-    }
-
-    res.json(cart)
 })
 
 router.put('/api/carts/:cid', async (req, res) => {

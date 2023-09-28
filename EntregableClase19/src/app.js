@@ -4,8 +4,8 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const handlebars = require('express-handlebars');
 const MongoStore = require('connect-mongo');
-const sessionsRouter = require('./routes/sessions');
-const viewsRouter = require('./routes/views');
+const usersRouter = require('./routes/users.router');
+//const viewsRouter = require('./routes/views');
 const User = require('./models/User');
 
 const app = express();
@@ -35,8 +35,11 @@ app.set("views", __dirname + '/views')
 app.set("view engine", "handlebars")
 
 
-app.use('/api/sessions', sessionsRouter);
-app.use('/', viewsRouter);
+app.use('/', usersRouter);
+
+app.get('/', (req, res) => {
+    res.send('Express Sessions!')
+})
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

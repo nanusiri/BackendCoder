@@ -7,6 +7,8 @@ const MongoStore = require('connect-mongo');
 const usersRouter = require('./routes/users.router');
 //const viewsRouter = require('./routes/views');
 const User = require('./models/User');
+const passport = require("passport")
+const initializePassport = require("./config/passport.config")
 
 const app = express();
 
@@ -14,7 +16,6 @@ mongoose.connect('mongodb+srv://nanualejandro:UaQAnwVjBAMsE6PN@coderhouse.brwecw
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
-
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -30,6 +31,10 @@ app.use(session({
 })
 );
 
+initializePassport(passport)
+app.use(passport.initialize())
+app.use(passport.session())
+
 app.engine("handlebars", handlebars.engine())
 app.set("views", __dirname + '/views')
 app.set("view engine", "handlebars")
@@ -37,9 +42,9 @@ app.set("view engine", "handlebars")
 
 app.use('/', usersRouter);
 
-app.get('/', (req, res) => {
+/* app.get('/', (req, res) => {
     res.send('Express Sessions!')
-})
+}) */
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

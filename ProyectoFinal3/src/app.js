@@ -1,19 +1,20 @@
-const express = require('express');
-const cartRouter = require('./routes/cart.router');
-const productRouter = require('./routes/products.router')
-const mongoose = require('mongoose');
-const { productModel } = require('./models/product.model')
-const { cartModel } = require('./models/cart.model')
-const mongoosePaginate = require('mongoose-paginate-v2');
-const app = express();
-const port = 8080;
+import express from 'express'
+import cartRouter from './routes/cart.router.js'
+import productRouter from './routes/products.router.js'
+import mongoose from 'mongoose'
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+const app = express();
+
+import config from "./config/config.js"
+
+const port = config.port
+
+app.listen(port, () => console.log(`Example app is active`));
 
 app.use(express.json());
 
 const environment = async () => {
-    await mongoose.connect("mongodb+srv://nanualejandro:JBANIrDkH9EigMcF@e-commerce.ewrans5.mongodb.net/?retryWrites=true&w=majority")
+    await mongoose.connect(config.mongoUrl)
 
     console.log("Conectado a la base de datos")
 

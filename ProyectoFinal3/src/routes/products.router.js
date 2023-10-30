@@ -1,16 +1,23 @@
-import express from 'express'
-const router = express.Router()
-import * as productController from '../controllers/productControllers.js';
+import { Router } from "express"
+import {
+    obtenerProductos,
+    obtenerXProducto,
+    nuevoProducto,
+    actualizarProducto,
+    eliminarProducto
+} from "../controllers/productControllers.js"
 
-router.get('/api/products', productController.obtenerProductos)
+const router = Router()
 
-router.get('/api/products/:pid', productController.obtenerXProducto)
+router.get('/api/products', obtenerProductos)
 
-router.post('/api/products', productController.nuevoProducto)
+router.get('/api/products/:pid', obtenerXProducto)
 
-router.put('/api/products/:pid', productController.actualizarProducto)
+router.post('/api/products', nuevoProducto)
 
-router.delete('/api/products/:pid', productController.eliminarProducto)
+router.put('/api/products/:pid', actualizarProducto)
+
+router.delete('/api/products/:pid', eliminarProducto)
 
 
 export default router

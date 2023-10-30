@@ -1,20 +1,28 @@
-import express from 'express'
-const router = express.Router()
-import * as cartController from '../controllers/cartControllers.js';
+import { Router } from "express"
+import {
+    crearCarrito,
+    obtenerCarrito,
+    agregarProducto,
+    actualizarCarrito,
+    actualizarCantidad,
+    eliminarProducto,
+    eliminarCarrito
+} from "../controllers/cartControllers.js"
 
+const router = Router()
 
-router.post("/api/carts", cartController.crearCarrito)
+router.post("/api/carts", crearCarrito)
 
-router.get('/api/carts/:cid', cartController.obtenerCarrito)
+router.get('/api/carts/:cid', obtenerCarrito)
 
-router.post('/api/carts/:cid/product/:pid', cartController.agregarProducto)
+router.post('/api/carts/:cid/product/:pid', agregarProducto)
 
-router.put('/api/carts/:cid', cartController.actualizarCarrito)
+router.put('/api/carts/:cid', actualizarCarrito)
 
-router.put('/api/carts/:cid/products/:pid', cartController.actualizarCantidad)
+router.put('/api/carts/:cid/products/:pid', actualizarCantidad)
 
-router.delete('/api/carts/:cid/products/:pid', cartController.eliminarProducto)
+router.delete('/api/carts/:cid/products/:pid', eliminarProducto)
 
-router.delete('/api/carts/:cid', cartController.eliminarCarrito)
+router.delete('/api/carts/:cid', eliminarCarrito)
 
 export default router;

@@ -1,11 +1,14 @@
+import CartDTO from '../dao/DTOs/cart.dto.js'
 import Cart from '../dao/classes/cart.dao.js'
 
 const cartService = new Cart()
 
 export const crearCarrito = async (req, res) => {
-    const titular = req.body.titularCarrito
+    const titular = req.body
 
-    let result = await cartService.crearCarrito(titular)
+    let cart = new CartDTO(titular)
+
+    let result = await cartService.crearCarrito(cart)
     if (!result) return res.status(500).send({ status: "Error", error: "Algo salió mal" })
 
     res.send({ result: "success", payload: result })

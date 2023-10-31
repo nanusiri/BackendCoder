@@ -1,3 +1,4 @@
+import ProductDTO from "../dao/DTOs/product.dto.js"
 import Product from "../dao/classes/product.dao.js"
 
 const productService = new Product()
@@ -26,11 +27,14 @@ export const obtenerXProducto = async (req, res) => {
 export const nuevoProducto = async (req, res) => {
     const newProduct = req.body
 
-    if (!newProduct.productTitle || !newProduct.productDescription || !newProduct.productCode || !newProduct.productPrice || !newProduct.productStatus || !newProduct.productStock || !newProduct.productCategory) {
+    /* if (!newProduct.productTitle || !newProduct.productDescription || !newProduct.productCode || !newProduct.productPrice || !newProduct.productStatus || !newProduct.productStock || !newProduct.productCategory) {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' })
-    }
+    } */
 
-    let result = await productService.nuevoProducto(newProduct)
+    let product = new ProductDTO(newProduct)
+    /* console.log(product) */
+    let result = await productService.nuevoProducto(product)
+    console.log(result)
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
     res.send({ status: "success", result: result })
 }

@@ -1,3 +1,4 @@
+import ProductDTO from "../DTOs/product.dto.js";
 import productModel from "../models/product.model.js";
 
 export default class Product {

@@ -122,4 +122,21 @@ export default class Product {
             return null
         }
     }
+
+    actualizarStockProducto = async (pid, newStock) => {
+        try {
+
+            let product = await productModel.findById({ _id: pid })
+
+            product.productStock = newStock
+
+            await product.save()
+
+            return product
+
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+    }
 }

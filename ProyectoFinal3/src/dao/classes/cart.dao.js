@@ -1,4 +1,7 @@
 import cartModel from "../models/cart.model.js";
+/* import Product from "./product.dao.js"
+
+const productService = new Product() */
 
 export default class Cart {
     crearCarrito = async (titularCarrito) => {
@@ -84,11 +87,11 @@ export default class Cart {
             if (!cart) {
                 return res.status(404).json({ error: 'Carrito no encontrado' })
             }
-
-            const productInCart = cart.productos.find(producto => producto.id === pid)
-
+            console.log(cart)
+            const productInCart = cart.productos.find(producto => producto.producto.equals(pid))
+            console.log(productInCart)
             if (!productInCart) {
-                return res.status(404).json({ error: 'Producto no encontrado' })
+                return console.log('Producto no encontrado')
             }
 
             productInCart.quantity = newQuantity
@@ -149,4 +152,33 @@ export default class Cart {
             return null
         }
     }
+
+    /* finalizarCompra = async (cid) => {
+        try {
+            let cart = await obtenerCarrito(cid)
+
+            let products = cart.productos.map(item => item.producto)
+            let quantities = cart.productos.map(item => item.quantity)
+
+            products.forEach(async (product, index) => {
+                const result = await productService.obtenerXProducto(product)
+
+                let stock = result.productStock
+
+                if (stock >= quantities[index]) {
+                    let newStock = stock - quantities[index]
+                    await productService.actualizarStockProducto(product._id, newStock)
+
+                } else {
+                    console.log(`No hay suficiente stock para el producto: ${product}`);
+                    return
+                }
+            });
+
+            return 
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+    } */
 }

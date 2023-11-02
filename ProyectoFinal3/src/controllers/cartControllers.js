@@ -1,6 +1,8 @@
 import CartDTO from '../dao/DTOs/cart.dto.js'
 import Cart from '../dao/classes/cart.dao.js'
+import Product from "../dao/classes/product.dao.js"
 
+const productService = new Product()
 const cartService = new Cart()
 
 export const crearCarrito = async (req, res) => {
@@ -84,4 +86,38 @@ export const eliminarCarrito = async (req, res) => {
     if (!result) return res.status(500).send({ status: "Error", error: "Algo salió mal" })
 
     res.send({ result: "success", payload: result })
+}
+
+
+export const finalizarCompra = async (req, res) => {
+    const cid = req.params.cid
+
+    try {
+        let cart = await cartService.obtenerCarrito(cid)
+
+        let products = cart.productos.map(item => item.producto)
+        let quantities = cart.productos.map(item => item.quantity)
+
+        products.forEach(async (product, index) => {
+            const result = await productService.obtenerXProducto(product)
+
+            let stock = result.productStock
+
+            if (stock >= quantities[index]) {
+                let newStock = stock - quantities[index]
+                await productService.actualizarStockProducto(product._id, newStock)
+
+            } else {
+                console.log(`No hay suficiente stock para el producto: ${product}`);
+                return
+            }
+        });
+
+        res.send({ result: "success" })
+    } catch (error) {
+        console.error(error);
+        return null
+    }
+
+
 }

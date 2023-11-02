@@ -63,4 +63,3 @@ export const eliminarProducto = async (req, res) => {
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
     res.send({ status: "success", result: result })
 }
-

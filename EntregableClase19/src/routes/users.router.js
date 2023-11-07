@@ -55,13 +55,13 @@ router.post('/login', passport.authenticate('login', { failureRedirect: '/faillo
         const { email, password } = req.body;
         if (!email || !password) return res.status(400).render("login", { error: "Valores erroneos" })
 
-        const user = await User.findOne({ email }, { first_name: 1, last_name: 1, age: 1, password: 1, email: 1 });
 
-        if (!isValidatePassword(user, password)) {
+        const user = await User.findOne({ email }, { first_name: 1, last_name: 1, age: 1, password: 1, email: 1 });
+        console.log(user, password)
+
+        if (!isValidatePassword(user.password, password)) {
             return res.status(401).render("login", { error: "Error en password" })
         };
-
-        console.log(user)
 
         delete user.password
 

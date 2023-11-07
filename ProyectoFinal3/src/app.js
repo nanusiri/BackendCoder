@@ -6,10 +6,8 @@ import mongoose from 'mongoose'
 import session from 'express-session'
 import bodyParser from 'body-parser'
 import MongoStore from 'connect-mongo'
-import passport from 'passport'
-import cookieParser from 'cookie-parser'
 import config from "./config/config.js"
-//import initializePassport from './config/passport.config.js'
+
 
 const app = express();
 const port = config.port
@@ -33,10 +31,6 @@ app.use(session({
     saveUninitialized: true
 })
 )
-
-/* initializePassport(passport)
-app.use(passport.initialize())
-app.use(passport.session()) */
 
 app.use("/", cartRouter);
 app.use("/", productRouter);

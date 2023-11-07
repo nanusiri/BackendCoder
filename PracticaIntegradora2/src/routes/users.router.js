@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 const { createHash, isValidatePassword } = require("../../utils")
 const passport = require("passport")
+const jwt = require("jsonwebtoken")
 
 router.get('/register', (req, res) => {
     res.render('register')
@@ -54,15 +55,22 @@ router.post('/login', passport.authenticate('login', { failureRedirect: '/faillo
 
         const user = await User.findOne({ email }, { first_name: 1, last_name: 1, age: 1, password: 1, email: 1 });
 
-        console.log(user, password)
+        //console.log(user, password)
 
         if (!isValidatePassword(user.password, password)) {
             return res.status(401).send({ error: "Error en password" })
         };
 
         if (user) {
-            req.session.user = user
-            res.redirect('/profile')
+            /* req.session.user = user
+            res.redirect('/profile') */
+
+            let token = jwt.sign({ email, password }, "coderSecret", { expiresIn: "24h" })
+            res.cookie("tokenUsuario", token, {
+                maxAge: 60 * 60 * 1000,
+                httpOnly: true
+            }).redirect('/profile')
+
         } else {
             return res.status(400).send({ error: "Usuario no encontrado" })
         }
@@ -75,9 +83,9 @@ router.post('/login', passport.authenticate('login', { failureRedirect: '/faillo
 });
 
 router.get('/profile', (req, res) => {
-    if (!req.session.user) {
+    /* if (!req.session.user) {
         return res.redirect('/login');
-    }
+    } */
     const { first_name, last_name, email, age, password } = req.session.user;
 
     res.render('profile', { first_name, last_name, email, age });

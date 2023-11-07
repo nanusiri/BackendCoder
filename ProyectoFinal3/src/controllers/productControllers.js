@@ -27,10 +27,6 @@ export const obtenerXProducto = async (req, res) => {
 export const nuevoProducto = async (req, res) => {
     const newProduct = req.body
 
-    /* if (!newProduct.productTitle || !newProduct.productDescription || !newProduct.productCode || !newProduct.productPrice || !newProduct.productStatus || !newProduct.productStock || !newProduct.productCategory) {
-        return res.status(400).json({ error: 'Todos los campos son obligatorios' })
-    } */
-
     let product = new ProductDTO(newProduct)
     /* console.log(product) */
     let result = await productService.nuevoProducto(product)

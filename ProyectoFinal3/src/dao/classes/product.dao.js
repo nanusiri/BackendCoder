@@ -61,7 +61,7 @@ export default class Product {
 
 
             if (!product) {
-                return res.status(404).json({ error: 'Producto no encontrado' })
+                return null
             }
 
             return product
@@ -78,7 +78,7 @@ export default class Product {
             const existingProduct = await productModel.findOne({ productCode: newProduct.productCode })
 
             if (existingProduct) {
-                return res.status(400).json({ error: 'Ya hay un producto con ese código' })
+                return null
             }
 
             let result = await productModel.create(newProduct)
@@ -111,7 +111,7 @@ export default class Product {
             const product = await productModel.findById({ _id: pid })
 
             if (!product) {
-                return res.status(404).json({ error: 'Producto no encontrado' })
+                return null
             }
 
             product.deleteOne()

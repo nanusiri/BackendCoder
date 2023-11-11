@@ -1,9 +1,19 @@
-/* import bcrypt from "bcrypt"
+import { faker } from "@faker-js/faker"
+import ProductDTO from "./dao/DTOs/product.dto.js"
 
-export const createHash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10))
-export const isValidatePassword = (passwordHash, password) => bcrypt.compare(passwordHash, password)
-
- */
+export const generateProduct = () => {
+    const newProduct = {
+        titulo: faker.commerce.product(),
+        description: faker.commerce.productDescription(),
+        code: faker.number.int({ max: 10000 }),
+        price: faker.commerce.price(),
+        status: true,
+        stock: faker.number.int({ max: 10000 }),
+        category: faker.commerce.productAdjective()
+    }
+    let product = new ProductDTO(newProduct)
+    return product
+}
 
 export const adminAuth = (req, res, next) => {
     const user = req.session.user

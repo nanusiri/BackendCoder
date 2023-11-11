@@ -4,7 +4,8 @@ import {
     obtenerXProducto,
     nuevoProducto,
     actualizarProducto,
-    eliminarProducto
+    eliminarProducto,
+    mockProducts
 } from "../controllers/productControllers.js"
 import { adminAuth } from "../utils.js"
 
@@ -19,6 +20,8 @@ router.post('/api/products', adminAuth, nuevoProducto)
 router.put('/api/products/:pid', adminAuth, actualizarProducto)
 
 router.delete('/api/products/:pid', adminAuth, eliminarProducto)
+
+router.get('/api/mockingproducts', mockProducts)
 
 
 export default router

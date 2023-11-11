@@ -1,5 +1,6 @@
 import ProductDTO from "../dao/DTOs/product.dto.js"
 import Product from "../dao/classes/product.dao.js"
+import { generateProduct } from "../utils.js"
 
 const productService = new Product()
 
@@ -28,7 +29,7 @@ export const nuevoProducto = async (req, res) => {
     const newProduct = req.body
 
     let product = new ProductDTO(newProduct)
-    /* console.log(product) */
+
     let result = await productService.nuevoProducto(product)
     console.log(result)
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
@@ -58,4 +59,12 @@ export const eliminarProducto = async (req, res) => {
     let result = await productService.eliminarProducto(pid)
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
     res.send({ status: "success", result: result })
+}
+
+export const mockProducts = async (req, res) => {
+    for (let i = 0; i < 3; i++) { //PUSE 3 POR QUE 100 ME DEMORABA MUCHO
+        await productService.nuevoProducto(generateProduct())
+    }
+
+    res.send({ status: "success", msg: "Se crearon 100 productos con exito" })
 }

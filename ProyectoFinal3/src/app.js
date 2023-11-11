@@ -7,7 +7,7 @@ import session from 'express-session'
 import bodyParser from 'body-parser'
 import MongoStore from 'connect-mongo'
 import config from "./config/config.js"
-
+import compression from "express-compression"
 
 const app = express();
 const port = config.port
@@ -39,7 +39,9 @@ app.use("/", userRouter)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
+app.use(compression({
+    brotli: { enabled: true, zlib: {} }
+}))
 
 
 app.listen(port, () => console.log(`Example app is active`));

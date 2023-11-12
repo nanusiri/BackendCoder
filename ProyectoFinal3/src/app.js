@@ -8,6 +8,7 @@ import bodyParser from 'body-parser'
 import MongoStore from 'connect-mongo'
 import config from "./config/config.js"
 import compression from "express-compression"
+import errorHandler from "./middlewares/errors/index.js"
 
 const app = express();
 const port = config.port
@@ -43,5 +44,6 @@ app.use(compression({
     brotli: { enabled: true, zlib: {} }
 }))
 
+app.use(errorHandler)
 
 app.listen(port, () => console.log(`Example app is active`));

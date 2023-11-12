@@ -1,5 +1,8 @@
 import { faker } from "@faker-js/faker"
 import ProductDTO from "./dao/DTOs/product.dto.js"
+import EErrors from "./services/errors/enums.js"
+import CustomError from "./services/errors/CustomError.js"
+import { noAuth } from "./services/errors/info.js"
 
 export const generateProduct = () => {
     const newProduct = {
@@ -20,7 +23,12 @@ export const adminAuth = (req, res, next) => {
     if (user.role == "admin") {
         next()
     } else {
-        res.status(404).json({ error: "No es admin" })
+        CustomError.createError({
+            name: "User no es admin",
+            cause: noAuth(user),
+            message: "El usuario no es admin y no puede realizar esta actividad",
+            code: EErrors.NO_AUTH
+        })
     }
 }
 
@@ -29,6 +37,11 @@ export const userAuth = (req, res, next) => {
     if (user.role == "user") {
         next()
     } else {
-        res.status(404).json({ error: "No es user" })
+        CustomError.createError({
+            name: "Admin no autorizado",
+            cause: noAuth(user),
+            message: "Un administrador no puede realizar esta actividad",
+            code: EErrors.NO_AUTH
+        })
     }
 }

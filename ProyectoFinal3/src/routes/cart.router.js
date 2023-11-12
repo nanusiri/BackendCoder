@@ -13,7 +13,7 @@ import { userAuth } from "../utils.js"
 
 const router = Router()
 
-router.post("/api/carts", crearCarrito)
+router.post("/api/carts", userAuth, crearCarrito)
 
 router.get('/api/carts/:cid', obtenerCarrito)
 

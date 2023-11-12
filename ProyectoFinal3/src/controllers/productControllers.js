@@ -31,7 +31,7 @@ export const nuevoProducto = async (req, res) => {
     let product = new ProductDTO(newProduct)
 
     let result = await productService.nuevoProducto(product)
-    console.log(result)
+
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
     res.send({ status: "success", result: result })
 }

@@ -1,3 +1,6 @@
+import CustomError from "../../services/errors/CustomError.js";
+import EErrors from "../../services/errors/enums.js";
+import { buscarPorIdErrorInfo, nuevoProductoErrorInfo } from "../../services/errors/info.js";
 import ProductDTO from "../DTOs/product.dto.js";
 import productModel from "../models/product.model.js";
 
@@ -61,7 +64,12 @@ export default class Product {
 
 
             if (!product) {
-                return null
+                return CustomError.createError({
+                    name: "Producto no encontrado en la DB",
+                    cause: buscarPorIdErrorInfo(pid),
+                    message: "No hubo coincidencias",
+                    code: EErrors.INVALID_PARAMS
+                })
             }
 
             return product
@@ -76,9 +84,15 @@ export default class Product {
         try {
 
             const existingProduct = await productModel.findOne({ productCode: newProduct.productCode })
+            console.log(existingProduct)
 
             if (existingProduct) {
-                return null
+                return CustomError.createError({
+                    name: "Code ya existe",
+                    cause: nuevoProductoErrorInfo(newProduct),
+                    message: "Ingreso un productCode que ya existe en nuestra base de datos",
+                    code: EErrors.INVALID_PARAMS
+                })
             }
 
             let result = await productModel.create(newProduct)
@@ -111,7 +125,12 @@ export default class Product {
             const product = await productModel.findById({ _id: pid })
 
             if (!product) {
-                return null
+                return CustomError.createError({
+                    name: "Producto no encontrado en la DB",
+                    cause: buscarPorIdErrorInfo(pid),
+                    message: "No hubo coincidencias",
+                    code: EErrors.INVALID_PARAMS
+                })
             }
 
             product.deleteOne()

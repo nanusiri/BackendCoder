@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon src/app.js"
+    "start": "node --watch src/app.js"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +25,7 @@
     "nodemailer": "^6.9.7",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "twilio": "^4.19.0"
+    "twilio": "^4.19.0",
+    "winston": "^3.11.0"
   }
 }

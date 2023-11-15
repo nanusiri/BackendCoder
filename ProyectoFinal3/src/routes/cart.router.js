@@ -10,6 +10,8 @@ import {
     finalizarCompra
 } from "../controllers/cartControllers.js"
 import { userAuth } from "../utils.js"
+import { logger } from "../services/logger.js"
+
 
 const router = Router()
 

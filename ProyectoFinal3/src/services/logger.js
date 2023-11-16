@@ -63,9 +63,6 @@ const prodLogger = createLogger({
 
 //Middleware
 export const addLogger = (req, res, next) => {
-    /* req.logger = devLogger
-    req.logger.info("Logger anda correctamente")
-    next() */
     if (config.environment === "production") {
         req.logger = prodLogger
     } else {

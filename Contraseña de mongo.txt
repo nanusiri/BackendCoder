@@ -14,3 +14,7 @@ JBANIrDkH9EigMcF  PASSWORD
 
 CODERAPP Google:
 Contraseña de app generada:    xkjh hlev pysq cvvz
+
+
+>node --version
+v20.9.0

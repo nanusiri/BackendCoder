@@ -1,0 +1,17 @@
+import { Router } from "express";
+import { generateUser } from "../utils.js"
+
+const router = Router()
+
+router.get("/", async (req, res) => {
+    let users = []
+    for (let i = 0; i < 10; i++) {
+        users.push(generateUser())
+    }
+
+    //console.log(users)
+
+    res.send({ status: "success", payload: users })
+})
+
+export default router

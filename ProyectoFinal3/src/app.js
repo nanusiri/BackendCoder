@@ -9,6 +9,7 @@ import MongoStore from 'connect-mongo'
 import config from "./config/config.js"
 import compression from "express-compression"
 import errorHandler from "./middlewares/errors/index.js"
+import { addLogger } from './services/logger.js'
 
 const app = express();
 const port = config.port
@@ -45,5 +46,19 @@ app.use(compression({
 }))
 
 app.use(errorHandler)
+
+//TEST LOGGER
+app.use(addLogger)
+
+app.get("/loggerTest", (req, res) => {
+    req.logger.debug("Logger nivel debug anda correctamente")
+    req.logger.http("Logger nivel http anda correctamente")
+    req.logger.info("Logger nivel info anda correctamente")
+    req.logger.warning("Logger nivel warning anda correctamente")
+    req.logger.error("Logger nivel error anda correctamente")
+    req.logger.fatal("Logger nivel fatal anda correctamente")
+
+    res.send({ msg: "test enviado por consola" })
+})
 
 app.listen(port, () => console.log(`Example app is active`));

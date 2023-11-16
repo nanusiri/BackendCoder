@@ -1,0 +1,28 @@
+config: 
+  target: "http://localhost:8080"
+  phases:
+  - duration: 20
+  arrivalRate: 10
+  metrics:
+  - plugin: "metrics-by-endpoints"
+    scenarios:
+    - flow:
+      - post:
+          url: "/test/user"
+          json:
+            username: "testuser"
+            email: "email@mail.com"
+            password: "password123"
+          capture:
+            - json: "$.message"
+              as: "responseMessage"
+      - post:
+          url: "/register"
+          json:
+            username: "testuser"
+            email: "email@mail.com"
+            password: "password123"
+          capture:
+            - json: "$.message"
+              as: "responseMessage"
+        

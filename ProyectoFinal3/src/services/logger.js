@@ -1,8 +1,9 @@
 import winston from "winston"
+import config from "../config/config.js"
 const { createLogger, format, transports } = winston
 
 const customLevelOptions = {
-    levelsDev: {
+    levels: {
         fatal: 0,
         error: 1,
         warning: 2,
@@ -21,15 +22,36 @@ const customLevelOptions = {
 }
 
 //Logger DESARROLLO
-export const devLogger = createLogger({
-    levels: customLevelOptions.levelsDev,
+const devLogger = createLogger({
+    levels: customLevelOptions.levels,
     transports: [
         new transports.Console({
             level: "debug",
-            format: format.combine(
+            /* format: format.combine(
                 format.colorize({ colors: customLevelOptions.colors }),
                 format.simple()
-            )
+            ) */
+            format: format.simple()
+        }),
+        new transports.File({
+            filename: "./errors.log",
+            level: "error",
+            format: format.simple()
+        })
+    ]
+})
+
+//Logger PRODUCTIVO
+const prodLogger = createLogger({
+    levels: customLevelOptions.levels,
+    transports: [
+        new transports.Console({
+            level: "info",
+            /* format: format.combine(
+                format.colorize({ colors: customLevelOptions.colors }),
+                format.simple()
+            ) */
+            format: format.simple()
         }),
         new transports.File({
             filename: "./errors.log",
@@ -40,8 +62,11 @@ export const devLogger = createLogger({
 })
 
 //Middleware
-export const logger = (req, res, next) => {
-    if (process.env.NODE_ENV === "production") {
+export const addLogger = (req, res, next) => {
+    /* req.logger = devLogger
+    req.logger.info("Logger anda correctamente")
+    next() */
+    if (config.environment === "production") {
         req.logger = prodLogger
     } else {
         req.logger = devLogger

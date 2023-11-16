@@ -22,10 +22,10 @@ export const crearCarrito = async (req, res) => {
 export const obtenerCarrito = async (req, res) => {
     const cid = req.params.cid
 
-    req.logger.info("Logger anda correctamente")
-
     let result = await cartService.obtenerCarrito(cid)
-    if (!result) return res.status(500).send({ status: "Error", error: "Algo salió mal" })
+    if (!result) {
+        return res.status(500).send({ status: "Error", error: "Algo salió mal" })
+    }
 
     res.send({ result: "success", payload: result })
 }

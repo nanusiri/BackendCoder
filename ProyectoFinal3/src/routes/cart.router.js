@@ -10,14 +10,13 @@ import {
     finalizarCompra
 } from "../controllers/cartControllers.js"
 import { userAuth } from "../utils.js"
-import { logger } from "../services/logger.js"
-
+import { addLogger } from "../services/logger.js"
 
 const router = Router()
 
 router.post("/api/carts", userAuth, crearCarrito)
 
-router.get('/api/carts/:cid', obtenerCarrito)
+router.get('/api/carts/:cid', addLogger, obtenerCarrito)
 
 router.post('/api/carts/:cid/product/:pid', userAuth, agregarProducto)
 

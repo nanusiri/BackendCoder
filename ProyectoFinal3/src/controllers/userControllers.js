@@ -1,40 +1,38 @@
-import User from "../dao/models/user.model.js"
+import userModel from "../dao/models/user.model.js"
+import User from "../dao/classes/user.dao.js"
+
+const userService = new User()
 
 export const register = async (req, res) => {
-    try {
-        const { first_name, last_name, email, age, password, role, phone } = req.body
+    const { first_name, last_name, email, age, password, role, phone } = req.body
 
-        const newUser = {
-            first_name,
-            last_name,
-            email,
-            age,
-            password,
-            role,
-            phone
-        }
-        console.log(newUser)
-        let result = await User.create(newUser)
-        return res.send({ status: "Success", payload: result })
-    } catch (error) {
-        return res.status(500).send({ status: 'error', error: 'Error interno del servidor' })
-    }
+    let result = await userService.registrarUsuario(first_name, last_name, email, age, password, role, phone)
+
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+    res.send({ status: "success", result: result })
 }
 
 export const login = async (req, res) => {
-    try {
-        const { email, password } = req.body;
+    const { email, password } = req.body;
 
-        const user = await User.findOne({ email }, { first_name: 1, last_name: 1, age: 1, password: 1, email: 1, role: 1, phone: 1 })
-        //console.log(user)
-        if (user.password === password) {
-            req.session.user = user
-            return res.send({ status: "Success", payload: user });
-        } else {
-            return res.status(400).render("login", { error: "Usuario no encontrado" })
-        }
+    let result = await userService.loguearUsuario(email, password)
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+    res.send({ status: "success", result: result })
+}
 
-    } catch (error) {
-        return res.status(500).send({ status: 'error', error: 'Error interno del servidor' })
-    }
+export const cambiarContrasenia = async (req, res) => {
+    const { email, newPassword, newPasswordCopy } = req.body;
+    const { token } = req.params
+
+    let result = await userService.restablecerContrasenia(email, newPassword, newPasswordCopy, token)
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+    res.send({ status: "success", result: result })
+}
+
+export const contraseniaOlvidada = async (req, res) => {
+    const { email } = req.body;
+
+    let result = await userService.enviarMail(email)
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+    res.send({ status: "success", message: "Mail enviado correctamente" })
 }

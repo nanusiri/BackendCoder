@@ -8,17 +8,7 @@
 </head>
 
 <body>
-    <h1>Lista de Productos</h1>
-    <ul>
-        {{#each producto}}
-        <li>{{this.productTitle}}, {{this.Description}}, {{this.price}}, {{this.stcoke}}</li>
-    </ul>
-    <p>Página actual: {{currentPage}} / {{totalPages}}</p>
-    {{#if currentPage > 1}}
-    <a href="/products?page={{currentPage - 1}}">Anterior</a>
-    {{/if}}
-    {{#if currentPage < totalPages}} <a href="/products?page={{currentPage + 1}}">Siguiente</a>
-        {{/if}}
+    {{{body}}}
 </body>
 
 </html>

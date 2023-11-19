@@ -1,6 +1,7 @@
 import express from "express"
 const router = express.Router()
 import { register, login, cambiarContrasenia, contraseniaOlvidada } from "../controllers/userControllers.js"
+import path from "path"
 
 router.post("/register", register)
 
@@ -11,7 +12,7 @@ router.get("/enviarMail", contraseniaOlvidada)
 router.post("/restablecerContrasenia/:token", cambiarContrasenia)
 
 router.get("/restablecerContrasenia/:token", (req, res) => {
-    res.render("recuperarContraseña")
+    res.render('recuperarContraseña')
 })
 
 

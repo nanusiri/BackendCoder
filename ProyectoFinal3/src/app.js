@@ -10,9 +10,13 @@ import config from "./config/config.js"
 import compression from "express-compression"
 import errorHandler from "./middlewares/errors/index.js"
 import { addLogger } from './services/logger.js'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
 const app = express();
 const port = config.port
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 mongoose.connect(config.mongoUrl, {
     useNewUrlParser: true,
@@ -34,6 +38,9 @@ app.use(session({
 })
 )
 
+app.set('view engine', 'ejs')
+app.set('views', __dirname + '/views')
+
 app.use("/", cartRouter);
 app.use("/", productRouter);
 app.use("/", userRouter)
@@ -46,6 +53,7 @@ app.use(compression({
 }))
 
 app.use(errorHandler)
+
 
 //TEST LOGGER
 app.use(addLogger)

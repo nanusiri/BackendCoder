@@ -56,8 +56,8 @@ export default class User {
 
     restablecerContrasenia = async (email, newPassword, newPasswordCopy, token) => {
         try {
-            const decodedToken = jwt.verify(token, JWT_SECRET)
-            const user = await userModel.findOne({ email: decodedToken.email, resetToken: token, resetTokenExpiration: { $gt: Date.now() } });
+
+            const user = await userModel.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } });
 
             if (!user) {
                 return CustomError.createError({
@@ -111,7 +111,7 @@ export default class User {
                 })
             }
 
-            const resetToken = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h' })
+            const resetToken = Math.random().toString(36).substring(2, 15);
             user.resetToken = resetToken
             user.resetTokenExpiration = Date.now() + 60 * 60 * 1000
             await user.save()

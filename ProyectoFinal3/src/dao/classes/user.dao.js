@@ -57,7 +57,10 @@ export default class User {
     restablecerContrasenia = async (email, newPassword, newPasswordCopy, token) => {
         try {
             const decodedToken = jwt.verify(token, JWT_SECRET)
+            console.log('Token decodificado:', decodedToken)
             const user = await userModel.findOne({ email: decodedToken.email, resetToken: token, resetTokenExpiration: { $gt: Date.now() } });
+            console.log('Usuario encontrado:', user)
+
 
             if (!user) {
                 return CustomError.createError({
@@ -111,7 +114,8 @@ export default class User {
                 })
             }
 
-            const resetToken = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h' })
+            const resetToken = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h', algorithm: 'HS256' })
+            console.log('Token generado', resetToken)
             user.resetToken = resetToken
             user.resetTokenExpiration = Date.now() + 60 * 60 * 1000
             await user.save()
@@ -134,10 +138,8 @@ export default class User {
             transporter.sendMail(mailOptions, (error, info) => {
                 if (error) {
                     console.log(error)
-                    res.send("error de envio")
                 } else {
                     console.log("correo enviado", info.response)
-                    res.send("Correo enviado con exito")
                 }
             })
 

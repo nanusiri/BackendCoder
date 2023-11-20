@@ -18,7 +18,8 @@ const userSchema = new mongoose.Schema({
             type: mongoose.SchemaTypes.ObjectId,
             ref: "carts"
         }
-    ]
+    ],
+    resetToken: { type: String, maxlength: 1000 }
 });
 
 const userModel = mongoose.model(userCollection, userSchema)

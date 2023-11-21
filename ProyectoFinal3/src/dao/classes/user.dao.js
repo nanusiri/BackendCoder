@@ -59,6 +59,7 @@ export default class User {
 
             const user = await userModel.findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } });
             console.log(user)
+            console.log(newPassword)
             if (!user) {
                 return CustomError.createError({
                     name: "Usuario no encontrado en la DB",

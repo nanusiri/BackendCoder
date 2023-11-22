@@ -58,7 +58,7 @@ export default class User {
         try {
             const decodedToken = jwt.verify(token, JWT_SECRET)
             console.log('Token decodificado:', decodedToken)
-            const user = await userModel.findOne({ email: decodedToken.email, resetToken: token, resetTokenExpiration: { $gt: Date.now() } });
+            const user = await userModel.findOne({ email: decodedToken.email, resetToken: token });
             console.log('Usuario encontrado:', user)
 
 
@@ -91,7 +91,6 @@ export default class User {
 
             user.password = newPassword
             user.resetToken = undefined
-            user.resetTokenExpiration = undefined
             user.save()
             return user
 
@@ -114,10 +113,9 @@ export default class User {
                 })
             }
 
-            const resetToken = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h', algorithm: 'HS256' })
+            const resetToken = jwt.sign({ email }, JWT_SECRET, { expiresIn: '2m', algorithm: 'HS256' })
             console.log('Token generado', resetToken)
             user.resetToken = resetToken
-            user.resetTokenExpiration = Date.now() + 60 * 60 * 1000
             await user.save()
 
             const resetLink = `http://localhost:8080/restablecerContrasenia/${resetToken}`

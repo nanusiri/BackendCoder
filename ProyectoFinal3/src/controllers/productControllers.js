@@ -56,7 +56,9 @@ export const actualizarProducto = async (req, res) => {
 export const eliminarProducto = async (req, res) => {
     const pid = req.params.pid
 
-    let result = await productService.eliminarProducto(pid)
+    const user = req.session.user
+
+    let result = await productService.eliminarProducto(pid, user)
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
     res.send({ status: "success", result: result })
 }

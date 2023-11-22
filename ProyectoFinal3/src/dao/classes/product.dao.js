@@ -1,6 +1,6 @@
 import CustomError from "../../services/errors/CustomError.js";
 import EErrors from "../../services/errors/enums.js";
-import { buscarPorIdErrorInfo, nuevoProductoErrorInfo } from "../../services/errors/info.js";
+import { buscarPorIdErrorInfo, noAuth, nuevoProductoErrorInfo } from "../../services/errors/info.js";
 import ProductDTO from "../DTOs/product.dto.js";
 import productModel from "../models/product.model.js";
 
@@ -119,7 +119,7 @@ export default class Product {
         }
     }
 
-    eliminarProducto = async (pid) => {
+    eliminarProducto = async (pid, user) => {
         try {
 
             const product = await productModel.findById({ _id: pid })
@@ -130,6 +130,15 @@ export default class Product {
                     cause: buscarPorIdErrorInfo(pid),
                     message: "No hubo coincidencias",
                     code: EErrors.INVALID_PARAMS
+                })
+            }
+            console.log(user)
+            if (product.productOwner != user.email) {
+                return CustomError.createError({
+                    name: "No puede eliminar un producto que no le pertenece",
+                    cause: noAuth(product),
+                    message: "Esta intentando borrar un producto que no le pertenece",
+                    code: EErrors.NO_AUTH
                 })
             }
 

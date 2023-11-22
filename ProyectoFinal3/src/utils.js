@@ -32,6 +32,20 @@ export const adminAuth = (req, res, next) => {
     }
 }
 
+export const ownerAdminAuth = (req, res, next) => {
+    const user = req.session.user
+    if (user.role == "user") {
+        CustomError.createError({
+            name: "Usuarios con rol user no pueden crear productos",
+            cause: noAuth(user),
+            message: "El usuario no es premium ni admin y no puede realizar esta actividad",
+            code: EErrors.NO_AUTH
+        })
+    } else {
+        next()
+    }
+}
+
 export const userAuth = (req, res, next) => {
     const user = req.session.user
     if (user.role == "user") {
@@ -45,3 +59,4 @@ export const userAuth = (req, res, next) => {
         })
     }
 }
+

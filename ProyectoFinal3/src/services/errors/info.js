@@ -21,3 +21,7 @@ export const newPasswordErrorInfo = () => {
 export const newPasswordCopyErrorInfo = () => {
     return `Las dos contraseñas que ingreso el usuario no son iguales`
 }
+
+export const noAuthOwner = (product) => {
+    return `El producto le pertenece a ${product.productOwner}, usted no lo puede eliminar`
+}

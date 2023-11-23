@@ -15,8 +15,12 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
     const { email, password } = req.body;
 
+
     let result = await userService.loguearUsuario(email, password)
+
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+
+    req.session.user = result
     res.send({ status: "success", result: result })
 }
 
@@ -35,4 +39,12 @@ export const contraseniaOlvidada = async (req, res) => {
     let result = await userService.enviarMail(email)
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
     res.send({ status: "success", message: "Mail enviado correctamente" })
+}
+
+export const cambiarRol = async (req, res) => {
+    const uid = req.params.uid
+
+    let result = await userService.nuevoRol(uid)
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+    res.send({ status: "success", payload: result })
 }

@@ -1,4 +1,8 @@
 import cartModel from "../models/cart.model.js";
+import productModel from "../models/product.model.js";
+import CustomError from "../../services/errors/CustomError.js";
+import { agregarAlCarritoErrorInfo } from "../../services/errors/info.js";
+import EErrors from "../../services/errors/enums.js";
 
 
 export default class Cart {
@@ -32,13 +36,23 @@ export default class Cart {
         }
     }
 
-    agregarProducto = async (cid, pid, quantity) => {
+    agregarProducto = async (cid, pid, quantity, user) => {
         try {
 
             const cart = await cartModel.findById({ _id: cid })
+            const product = await productModel.findById({ _id: pid })
 
             if (!cart) {
                 return res.status(404).json({ error: 'Carrito no encontrado' })
+            }
+
+            if (user.email == product.productOwner) {
+                return CustomError.createError({
+                    name: "No puede agregar al carrito un producto que le pertenece",
+                    cause: agregarAlCarritoErrorInfo(product),
+                    message: "Esta intentando agregar un producto al carrito que ya le pertenece",
+                    code: EErrors.NO_AUTH
+                })
             }
 
             const productos = cart.productos

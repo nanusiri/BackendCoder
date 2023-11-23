@@ -27,10 +27,11 @@ export const obtenerXProducto = async (req, res) => {
 
 export const nuevoProducto = async (req, res) => {
     const newProduct = req.body
+    const user = req.session.user
 
     let product = new ProductDTO(newProduct)
 
-    let result = await productService.nuevoProducto(product)
+    let result = await productService.nuevoProducto(product, user)
 
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
     res.send({ status: "success", result: result })

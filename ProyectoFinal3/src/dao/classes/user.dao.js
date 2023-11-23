@@ -1,6 +1,6 @@
 import userModel from "../models/user.model.js"
 import CustomError from "../../services/errors/CustomError.js"
-import { buscarPorEmailErrorInfo, newPasswordCopyErrorInfo, newPasswordErrorInfo } from "../../services/errors/info.js"
+import { buscarUsuarioErrorInfo, newPasswordCopyErrorInfo, newPasswordErrorInfo } from "../../services/errors/info.js"
 import EErrors from "../../services/errors/enums.js"
 import nodemailer from "nodemailer"
 import jwt from "jsonwebtoken"
@@ -41,7 +41,6 @@ export default class User {
             const user = await userModel.findOne({ email }, { first_name: 1, last_name: 1, age: 1, password: 1, email: 1, role: 1, phone: 1 })
 
             if (user.password === password) {
-                req.session.user = user
                 return user;
             } else {
                 return null
@@ -65,7 +64,7 @@ export default class User {
             if (!user) {
                 return CustomError.createError({
                     name: "Usuario no encontrado en la DB",
-                    cause: buscarPorEmailErrorInfo(email),
+                    cause: buscarUsuarioErrorInfo(email),
                     message: "No hubo coincidencias",
                     code: EErrors.INVALID_PARAMS
                 })
@@ -107,7 +106,7 @@ export default class User {
             if (!user) {
                 return CustomError.createError({
                     name: "Usuario no encontrado en la DB",
-                    cause: buscarPorEmailErrorInfo(email),
+                    cause: buscarUsuarioErrorInfo(email),
                     message: "No hubo coincidencias",
                     code: EErrors.INVALID_PARAMS
                 })
@@ -142,6 +141,34 @@ export default class User {
             })
 
             return user
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+    }
+
+    nuevoRol = async (uid) => {
+        try {
+            const user = await userModel.findById({ _id: uid })
+
+            if (!user) {
+                return CustomError.createError({
+                    name: "Usuario no encontrado en la DB",
+                    cause: buscarUsuarioErrorInfo(uid),
+                    message: "No hubo coincidencias",
+                    code: EErrors.INVALID_PARAMS
+                })
+            }
+
+            if (user.role == "user") {
+                user.role = "premium"
+                await user.save()
+                return user
+            } else {
+                user.role = "user"
+                await user.save()
+                return user
+            }
         } catch (error) {
             console.error(error);
             return null

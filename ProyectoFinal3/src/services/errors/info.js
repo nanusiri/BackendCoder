@@ -2,8 +2,8 @@ export const buscarPorIdErrorInfo = (pid) => {
     return `El pid: ${pid}, no coincide con ningun producto en nuestra base de datos`
 }
 
-export const buscarPorEmailErrorInfo = (email) => {
-    return `El email: ${email}, no coincide con ningun usuairo en nuestra base de datos`
+export const buscarUsuarioErrorInfo = (data) => {
+    return `El email/id: ${data}, no coincide con ningun usuairo en nuestra base de datos`
 }
 
 export const nuevoProductoErrorInfo = (newProduct) => {
@@ -24,4 +24,8 @@ export const newPasswordCopyErrorInfo = () => {
 
 export const noAuthOwner = (product) => {
     return `El producto le pertenece a ${product.productOwner}, usted no lo puede eliminar`
+}
+
+export const agregarAlCarritoErrorInfo = () => {
+    return `El producto que quiere agregar al carrito ya le pertenece a usted y no lo puede comprar`
 }

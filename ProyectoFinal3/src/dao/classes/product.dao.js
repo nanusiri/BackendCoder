@@ -1,6 +1,6 @@
 import CustomError from "../../services/errors/CustomError.js";
 import EErrors from "../../services/errors/enums.js";
-import { buscarPorIdErrorInfo, noAuth, nuevoProductoErrorInfo } from "../../services/errors/info.js";
+import { buscarPorIdErrorInfo, noAuth, noAuthOwner, nuevoProductoErrorInfo } from "../../services/errors/info.js";
 import ProductDTO from "../DTOs/product.dto.js";
 import productModel from "../models/product.model.js";
 
@@ -80,11 +80,11 @@ export default class Product {
 
     }
 
-    nuevoProducto = async (newProduct) => {
+    nuevoProducto = async (newProduct, user) => {
         try {
 
             const existingProduct = await productModel.findOne({ productCode: newProduct.productCode })
-            console.log(existingProduct)
+
 
             if (existingProduct) {
                 return CustomError.createError({
@@ -93,6 +93,10 @@ export default class Product {
                     message: "Ingreso un productCode que ya existe en nuestra base de datos",
                     code: EErrors.INVALID_PARAMS
                 })
+            }
+
+            if (user.role == "premium") {
+                newProduct.productOwner = user.email
             }
 
             let result = await productModel.create(newProduct)
@@ -132,11 +136,11 @@ export default class Product {
                     code: EErrors.INVALID_PARAMS
                 })
             }
-            console.log(user)
-            if (product.productOwner != user.email) {
+
+            if (product.productOwner != user.email && user.role != "admin") {
                 return CustomError.createError({
                     name: "No puede eliminar un producto que no le pertenece",
-                    cause: noAuth(product),
+                    cause: noAuthOwner(product),
                     message: "Esta intentando borrar un producto que no le pertenece",
                     code: EErrors.NO_AUTH
                 })

@@ -48,15 +48,15 @@ export const ownerAdminAuth = (req, res, next) => {
 
 export const userAuth = (req, res, next) => {
     const user = req.session.user
-    if (user.role == "user") {
-        next()
-    } else {
+    if (user.role == "admin") {
         CustomError.createError({
             name: "Admin no autorizado",
             cause: noAuth(user),
             message: "Un administrador no puede realizar esta actividad",
             code: EErrors.NO_AUTH
         })
+    } else {
+        next()
     }
 }
 

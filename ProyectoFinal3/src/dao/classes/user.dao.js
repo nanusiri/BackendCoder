@@ -112,7 +112,7 @@ export default class User {
                 })
             }
 
-            const resetToken = jwt.sign({ email }, JWT_SECRET, { expiresIn: '2m', algorithm: 'HS256' })
+            const resetToken = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1h', algorithm: 'HS256' })
             console.log('Token generado', resetToken)
             user.resetToken = resetToken
             await user.save()

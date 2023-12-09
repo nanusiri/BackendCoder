@@ -1,0 +1,86 @@
+paths:
+  /api/users/:
+    get:
+      summary: Obtiene todos los usuarios
+      tags:
+        - Users
+      responses:
+        “200”:
+          description: “Datos obtenidos satisfactoriamente”
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ‘#components/schemas/User’
+        “500”:
+          description: “Error interno del servidor”
+  /api/users/{uid}:
+    get:
+      summary: Obtiene solo un usuario por id
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: id del usuario que se solicita
+          schema:
+          $type: String
+      responses:
+        “200”:
+          description: “usuario encontrado”
+          content:
+            application/json:
+              schema:
+                $ref: ‘#components/schemas/User’
+      “500”:
+        description: “Error interno del servidor”
+    put:
+      summary: Actualiza solo un usuario por id
+      tags:
+        - Users
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: id del usuario que se solicita
+          schema:
+            $type: String
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: ‘#components/requestBodies/updateUser’
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: ObjectId
+          description: Id generado en MongoDB
+        first_name:
+          type: String
+          description: Nombre del usuario
+        last_name:
+          type: String
+          description: Apellido del usuario
+      example: _id:ObjectId(30)
+      first_name: Omar
+      last_name: Manias
+    requestBodies:
+      updateUser:
+        type: object
+        properties:
+          first_name:
+            type: String
+            description: Nombre del usuario
+          last_name:
+            type: String
+            description: Apellido del usuario
+        example:
+          first_name: Omar
+          last_name: Manias

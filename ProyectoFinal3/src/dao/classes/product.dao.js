@@ -109,7 +109,7 @@ export default class Product {
     }
 
     actualizarProducto = async (pid, updateFields) => {
-        try {
+        /* try {
 
             const result = await productModel.updateOne({ _id: pid }, { $set: updateFields })
 
@@ -120,6 +120,20 @@ export default class Product {
         } catch (error) {
             console.error(error);
             return null
+        } */
+        try {
+            const options = { new: true }; // Devolver el documento actualizado
+
+            const product = await productModel.findOneAndUpdate(
+                { _id: pid },
+                { $set: updateFields },
+                options
+            );
+
+            return product;
+        } catch (error) {
+            console.error(error);
+            return null;
         }
     }
 

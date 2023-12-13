@@ -50,7 +50,9 @@ export const actualizarCarrito = async (req, res) => {
     const cid = req.params.cid
     const updateFields = req.body
 
-    let result = await cartService.agregarProducto(cid, updateFields)
+    const updateFieldsDTO = new CartDTO(updateFields)
+
+    let result = await cartService.actualizarCarrito(cid, updateFieldsDTO)
     if (!result) return res.status(500).send({ status: "Error", error: "Algo salió mal" })
 
     res.send({ result: "success", payload: result })

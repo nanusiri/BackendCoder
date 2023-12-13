@@ -12,6 +12,8 @@ import errorHandler from "./middlewares/errors/index.js"
 import { addLogger } from './services/logger.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import swaggerJsdoc from 'swagger-jsdoc';
+import SwaggerUiExpress from 'swagger-ui-express';
 
 const app = express();
 const port = config.port
@@ -22,6 +24,20 @@ mongoose.connect(config.mongoUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 })
+
+const swaggerOptions = {
+    definition: {
+        openapi: '3.0.1',
+        info: {
+            title: "Documentacion de mi proyecto final",
+            description: "API de mi e-commerce"
+        }
+    },
+    apis: [`src/docs/miApi.yaml`]
+}
+
+const specs = swaggerJsdoc(swaggerOptions)
+app.use('/apidocs', SwaggerUiExpress.serve, SwaggerUiExpress.setup(specs))
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }));

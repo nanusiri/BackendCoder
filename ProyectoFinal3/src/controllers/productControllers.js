@@ -28,7 +28,7 @@ export const obtenerXProducto = async (req, res) => {
 export const nuevoProducto = async (req, res) => {
     const newProduct = req.body
     const user = req.session.user
-
+    console.log(user)
     let product = new ProductDTO(newProduct)
 
     let result = await productService.nuevoProducto(product, user)
@@ -46,8 +46,9 @@ export const actualizarProducto = async (req, res) => {
     if (Object.keys(updateFields).length === 0) {
         return res.status(400).json({ error: 'Debe proporcionar almenos un campo para actualizar' })
     }
+    const updateFieldsDTO = new ProductDTO(updateFields)
 
-    let result = await productService.actualizarProducto(pid, updateFields)
+    let result = await productService.actualizarProducto(pid, updateFieldsDTO)
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
     res.send({ status: "success", result: result })
 }

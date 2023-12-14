@@ -5,7 +5,7 @@ const expect = chai.expect
 const requester = supertest("http://localhost:8080")
 
 describe("Testing", () => {
-    /* describe("test de session", () => {
+    describe("test de session", () => {
         it("Debe loguear correctamnte a un usuario que sea admin", async () => {
             const mockUser = {
                 email: "nanu@mail.com",
@@ -33,7 +33,7 @@ describe("Testing", () => {
             console.log(ok)
             console.log(_body) //me tira error por el middleware de autorizacion
         })
-    }) */
+    })
     describe("test de carts", () => {
         it("Debe cambiar la cantidad de un producto en el carrito seleccionado", async () => {
             const quantityMock = {

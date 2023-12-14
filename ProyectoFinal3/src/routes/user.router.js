@@ -6,6 +6,9 @@ import { userAuth } from "../utils.js"
 router.post("/register", register)
 
 router.post("/login", login)
+router.get("/login", (req, res) => {
+    res.render('login')
+})
 
 router.get("/enviarMail", contraseniaOlvidada)
 

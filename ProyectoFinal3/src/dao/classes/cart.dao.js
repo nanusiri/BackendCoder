@@ -106,7 +106,7 @@ export default class Cart {
                 return console.log('Producto no encontrado')
             }
 
-            productInCart.quantity = newQuantity
+            productInCart.quantity = newQuantity.quantity
 
             await cart.save()
 

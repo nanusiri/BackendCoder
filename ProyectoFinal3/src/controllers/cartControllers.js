@@ -61,7 +61,7 @@ export const actualizarCarrito = async (req, res) => {
 
 
 export const actualizarCantidad = async (req, res) => {
-    const newQuantity = req.body.quantity
+    const newQuantity = req.body/* .quantity */
     const cid = req.params.cid
     const pid = req.params.pid
 

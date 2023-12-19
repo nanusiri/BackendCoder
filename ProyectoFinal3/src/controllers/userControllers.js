@@ -15,13 +15,25 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
     const { email, password } = req.body;
 
-
     let result = await userService.loguearUsuario(email, password)
 
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
 
     req.session.user = result
     res.send({ status: "success", result: result })
+}
+
+export const logout = async (req, res) => {
+
+    const email = req.session.user.email
+
+    let result = await userService.ultimaConexion(email)
+
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+
+    req.session.user = undefined
+
+    res.send({ status: "success", message: "El usuario se ha deslogueado correctamente" })
 }
 
 export const cambiarContrasenia = async (req, res) => {
@@ -45,6 +57,49 @@ export const cambiarRol = async (req, res) => {
     const uid = req.params.uid
 
     let result = await userService.nuevoRol(uid)
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+    res.send({ status: "success", payload: result })
+}
+
+export const upload = async (req, res) => {
+    if (!req.files) {
+        return res.status(400).send({ status: "error", error: "No se pudo cargar tu archivo" })
+    }
+    console.log(req.files)
+
+    let docs = req.files
+    const uid = req.params.uid
+
+    let result = await userService.subirDocumentos(uid, docs)
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+    res.send({ status: "success", payload: result })
+}
+
+export const uploadProfileImage = async (req, res) => {
+    if (!req.file) {
+        return res.status(400).send({ status: "error", error: "No se pudo cargar tu archivo" })
+    }
+    console.log(req.file)
+
+    let image = req.file
+    const uid = req.params.uid
+
+    let result = await userService.subirProfileImage(uid, image)
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+    res.send({ status: "success", payload: result })
+}
+
+export const uploadProductImage = async (req, res) => {
+    if (!req.file) {
+        return res.status(400).send({ status: "error", error: "No se pudo cargar tu archivo" })
+    }
+    console.log(req.file)
+
+    let image = req.file
+    const uid = req.params.uid
+    const pid = req.params.pid
+
+    let result = await userService.subirProductImage(uid, pid, image)
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
     res.send({ status: "success", payload: result })
 }

@@ -1,9 +1,10 @@
 import userModel from "../models/user.model.js"
 import CustomError from "../../services/errors/CustomError.js"
-import { buscarUsuarioErrorInfo, newPasswordCopyErrorInfo, newPasswordErrorInfo } from "../../services/errors/info.js"
+import { buscarPorIdErrorInfo, buscarUsuarioErrorInfo, documentosSinCargar, newPasswordCopyErrorInfo, newPasswordErrorInfo, noAuthOwner } from "../../services/errors/info.js"
 import EErrors from "../../services/errors/enums.js"
 import nodemailer from "nodemailer"
 import jwt from "jsonwebtoken"
+import productModel from "../models/product.model.js"
 
 const JWT_SECRET = 'tu_secreto_super_seguro'
 
@@ -46,6 +47,21 @@ export default class User {
                 return null
             }
 
+
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+    }
+
+    ultimaConexion = async (email) => {
+        try {
+            const user = await userModel.findOne({ email })
+
+            user.last_connection = new Date()
+            user.save()
+
+            return user
 
         } catch (error) {
             console.error(error);
@@ -160,15 +176,128 @@ export default class User {
                 })
             }
 
-            if (user.role == "user") {
+            if (user.role == "user" && user.documents.length === 3 && user.documents.every(doc => doc.name && doc.reference)) {
                 user.role = "premium"
                 await user.save()
                 return user
-            } else {
+            } else if (user.role == "premium") {
                 user.role = "user"
                 await user.save()
                 return user
+            } else {
+                return CustomError.createError({
+                    name: "El usuario no cargo la informacion necesaria para obtener el rol premium",
+                    cause: documentosSinCargar(user),
+                    message: "Cuando termine de cargar los documentos solicitados podra obtener el rol premium",
+                    code: EErrors.FILES_NO_UPLOADED
+                })
             }
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+    }
+
+    subirDocumentos = async (uid, docs) => {
+        try {
+            const user = await userModel.findById({ _id: uid })
+
+            if (!user) {
+                return CustomError.createError({
+                    name: "Usuario no encontrado en la DB",
+                    cause: buscarUsuarioErrorInfo(uid),
+                    message: "No hubo coincidencias",
+                    code: EErrors.INVALID_PARAMS
+                })
+            }
+
+            const nuevosDocumentos = []
+
+            for (let index = 0; index < docs.length; index++) {
+                let doc = {}
+                let nombre = docs[index].originalname;
+                doc.name = nombre
+                let reference = docs[index].path
+                doc.reference = reference
+
+                nuevosDocumentos.push(doc)
+            }
+            user.documents = nuevosDocumentos
+
+            await user.save()
+
+            return user
+
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+    }
+
+    subirProfileImage = async (uid, image) => {
+        try {
+            const user = await userModel.findById({ _id: uid })
+
+            if (!user) {
+                return CustomError.createError({
+                    name: "Usuario no encontrado en la DB",
+                    cause: buscarUsuarioErrorInfo(uid),
+                    message: "No hubo coincidencias",
+                    code: EErrors.INVALID_PARAMS
+                })
+            }
+
+            user.profile_image = image.originalname
+
+            await user.save()
+
+            return user
+
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+    }
+
+    subirProductImage = async (uid, pid, image) => {
+        try {
+            const user = await userModel.findById({ _id: uid })
+
+            if (!user) {
+                return CustomError.createError({
+                    name: "Usuario no encontrado en la DB",
+                    cause: buscarUsuarioErrorInfo(uid),
+                    message: "No hubo coincidencias",
+                    code: EErrors.INVALID_PARAMS
+                })
+            }
+
+            const product = await productModel.findById({ _id: pid })
+
+            if (!product) {
+                return CustomError.createError({
+                    name: "Producto no encontrado en la DB",
+                    cause: buscarPorIdErrorInfo(pid),
+                    message: "No hubo coincidencias",
+                    code: EErrors.INVALID_PARAMS
+                })
+            }
+
+            if (product.productOwner != user.email && user.role != "admin") {
+                return CustomError.createError({
+                    name: "No puede agregar una imagen a un producto que no le pertenece",
+                    cause: noAuthOwner(product),
+                    message: "Esta intentando agregar una imagen a un producto que no le pertenece",
+                    code: EErrors.NO_AUTH
+                })
+            }
+
+            product.productImage = image.originalname
+
+            await product.save()
+
+            return product
+
         } catch (error) {
             console.error(error);
             return null

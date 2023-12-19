@@ -29,3 +29,7 @@ export const noAuthOwner = (product) => {
 export const agregarAlCarritoErrorInfo = () => {
     return `El producto que quiere agregar al carrito ya le pertenece a usted y no lo puede comprar`
 }
+
+export const documentosSinCargar = (user) => {
+    return `El usuario ${user.first_name} quiere tener el rol premium pero no cargo la documentacion necesaria`
+}

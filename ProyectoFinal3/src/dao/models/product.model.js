@@ -11,7 +11,8 @@ const productSchema = new mongoose.Schema({
     productStatus: { type: Boolean, required: true },
     productStock: { type: Number, required: true },
     productCategory: { type: String, required: true },
-    productOwner: { type: String, default: "admin" }
+    productOwner: { type: String, default: "admin" },
+    productImage: String
 })
 
 productSchema.plugin(mongoosePaginate)

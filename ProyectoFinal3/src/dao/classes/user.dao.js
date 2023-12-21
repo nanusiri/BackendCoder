@@ -42,6 +42,9 @@ export default class User {
             const user = await userModel.findOne({ email }, { first_name: 1, last_name: 1, age: 1, password: 1, email: 1, role: 1, phone: 1 })
 
             if (user.password === password) {
+                user.last_connection = "En linea"
+                user.save()
+
                 return user;
             } else {
                 return null

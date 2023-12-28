@@ -1,6 +1,6 @@
 import userModel from "../models/user.model.js"
 import CustomError from "../../services/errors/CustomError.js"
-import { buscarPorIdErrorInfo, buscarUsuarioErrorInfo, documentosSinCargar, newPasswordCopyErrorInfo, newPasswordErrorInfo, noAuthOwner } from "../../services/errors/info.js"
+import { asignarRolErrorInfo, buscarPorIdErrorInfo, buscarUsuarioErrorInfo, documentosSinCargar, newPasswordCopyErrorInfo, newPasswordErrorInfo, noAuthOwner } from "../../services/errors/info.js"
 import EErrors from "../../services/errors/enums.js"
 import nodemailer from "nodemailer"
 import jwt from "jsonwebtoken"
@@ -42,7 +42,7 @@ export default class User {
             const user = await userModel.findOne({ email }, { first_name: 1, last_name: 1, age: 1, password: 1, email: 1, role: 1, phone: 1 })
 
             if (user.password === password) {
-                user.last_connection = "En linea"
+                user.last_connection = new Date()
                 user.save()
 
                 return user;
@@ -201,6 +201,40 @@ export default class User {
         }
     }
 
+    adminAsignaRol = async (uid, nuevoRol) => {
+        try {
+            const user = await userModel.findById({ _id: uid })
+
+            if (!user) {
+                return CustomError.createError({
+                    name: "Usuario no encontrado en la DB",
+                    cause: buscarUsuarioErrorInfo(uid),
+                    message: "No hubo coincidencias",
+                    code: EErrors.INVALID_PARAMS
+                })
+            }
+
+            if (nuevoRol != "user" && nuevoRol != "premium" && nuevoRol != "admin") {
+                return CustomError.createError({
+                    name: "Rol de usuario no reconocido",
+                    cause: asignarRolErrorInfo(),
+                    message: `El rol del usuario solo puede ser "user", "premium" o "admin"`,
+                    code: EErrors.INVALID_PARAMS
+                })
+            }
+
+            user.role = nuevoRol
+
+            await user.save()
+
+            return user
+
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+    }
+
     subirDocumentos = async (uid, docs) => {
         try {
             const user = await userModel.findById({ _id: uid })
@@ -300,6 +334,88 @@ export default class User {
             await product.save()
 
             return product
+
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+    }
+
+    usuariosRegistrados = async () => {
+        try {
+
+            const users = await userModel.find({}, { first_name: 1, last_name: 1, email: 1, role: 1 })
+
+            if (!users) {
+                return CustomError.createError({
+                    name: "No hay usuarios en la DB",
+                    cause: buscarUsuarioErrorInfo(uid),
+                    message: "Primero debe haber usuarios registrados para poder buscarlos",
+                    code: EErrors.INVALID_PARAMS
+                })
+            }
+
+            return users
+
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+    }
+
+    eliminarUsuariosPorInactividad = async () => {
+        try {
+
+            const users = await userModel.find({}, { first_name: 1, email: 1, last_connection: 1 })
+
+            if (!users) {
+                return CustomError.createError({
+                    name: "No hay usuarios en la DB",
+                    cause: buscarUsuarioErrorInfo(uid),
+                    message: "Primero debe haber usuarios registrados para poder buscarlos",
+                    code: EErrors.INVALID_PARAMS
+                })
+            }
+
+            let inactivos = []
+
+            for (let i = 0; i < users.length; i++) {
+                const usuario = users[i];
+
+                const inactividadEnMs = new Date() - new Date(usuario.last_connection)
+                const inactividadEnMinutos = inactividadEnMs / (1000 * 60)
+
+                if (inactividadEnMinutos > 2880) {
+                    const mailOptions = {
+                        from: "nanualejandro@gmail.com",
+                        to: usuario.email,
+                        subject: "Su cuenta fue eliminada",
+                        html: `
+                        <div>
+                            <h1>Hola ${usuario.first_name}</h1>
+                            <p>Su cuenta ha sido eliminada por estar inactivo mas de 2 dias</p>
+                        </div>
+                        `
+                    }
+
+                    transporter.sendMail(mailOptions, (error, info) => {
+                        if (error) {
+                            console.log(error)
+                        } else {
+                            console.log("correo enviado", info.response)
+                        }
+                    })
+
+
+                    usuario.deleteOne()
+
+                }
+            }
+
+
+
+
+            return users
 
         } catch (error) {
             console.error(error);

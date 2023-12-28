@@ -61,6 +61,16 @@ export const cambiarRol = async (req, res) => {
     res.send({ status: "success", payload: result })
 }
 
+export const adminCambiaRol = async (req, res) => {
+    const { uid, nuevoRol } = req.body
+
+    console.log(nuevoRol)
+
+    let result = await userService.adminAsignaRol(uid, nuevoRol)
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+    res.send({ status: "success", payload: result })
+}
+
 export const upload = async (req, res) => {
     if (!req.files) {
         return res.status(400).send({ status: "error", error: "No se pudo cargar tu archivo" })
@@ -103,3 +113,22 @@ export const uploadProductImage = async (req, res) => {
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
     res.send({ status: "success", payload: result })
 }
+
+export const obtenerUsuarios = async (req, res) => {
+
+    let result = await userService.usuariosRegistrados()
+
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+
+    res.send({ status: "success", payload: result })
+}
+
+export const eliminarUsuarios = async (req, res) => {
+
+    let result = await userService.eliminarUsuariosPorInactividad()
+
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+
+    res.send({ status: "success", payload: result })
+}
+

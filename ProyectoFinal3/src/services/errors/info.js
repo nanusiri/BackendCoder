@@ -33,3 +33,11 @@ export const agregarAlCarritoErrorInfo = () => {
 export const documentosSinCargar = (user) => {
     return `El usuario ${user.first_name} quiere tener el rol premium pero no cargo la documentacion necesaria`
 }
+
+export const buscarUsuariosErrorInfo = () => {
+    return `En la base de datos que esta intentando ingresar no hay ningun usuario creado`
+}
+
+export const asignarRolErrorInfo = () => {
+    return `Esta asignandole un rol a un usuario que no es renocido como rol en nuestra base de datos`
+}

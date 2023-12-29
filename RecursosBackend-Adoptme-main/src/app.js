@@ -21,7 +21,7 @@ const swaggerOptions = {
             description: "API pensada para la clase de Swagger"
         }
     },
-    apis: [`src/docs/Users.yaml`]
+    apis: [`src/docs/Users/Users.yaml`]
 }
 
 const specs = swaggerJsdoc(swaggerOptions)

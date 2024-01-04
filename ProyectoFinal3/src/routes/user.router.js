@@ -1,6 +1,6 @@
 import express from "express"
 const router = express.Router()
-import { register, login, cambiarContrasenia, contraseniaOlvidada, cambiarRol, logout, upload, uploadProfileImage, uploadProductImage, obtenerUsuarios, eliminarUsuarios, adminCambiaRol } from "../controllers/userControllers.js"
+import { register, login, cambiarContrasenia, contraseniaOlvidada, cambiarRol, logout, upload, uploadProfileImage, uploadProductImage, obtenerUsuarios, eliminarUsuarios, adminView, adminDetailView, eliminarUsuario } from "../controllers/userControllers.js"
 import { uploader } from "../utils.js"
 
 router.post("/register", register)
@@ -30,10 +30,12 @@ router.get("/api/users", obtenerUsuarios)
 router.delete("/api/users", eliminarUsuarios)
 
 //router.get()
-router.post("/api/admin/cambiarRol", adminCambiaRol)
-router.get("/api/admin/cambiarRol", (req, res) => {
+router.post("/api/admin", adminView)
+router.get("/api/admin", (req, res) => {
     res.render('adminFunctions')
 })
+router.get("/api/admin/:uid", adminDetailView)
+router.delete("/api/admin/:uid", eliminarUsuario)
 
 
 

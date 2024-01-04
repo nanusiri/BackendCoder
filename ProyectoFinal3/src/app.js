@@ -57,6 +57,11 @@ app.use(session({
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
 
+app.get('/src/views/script.js', (req, res) => {
+    res.type('application/javascript'); // Establece el tipo MIME a JavaScript
+    res.sendFile('ruta/absoluta/al/script.js');
+});
+
 app.use("/", cartRouter);
 app.use("/", productRouter);
 app.use("/", userRouter)

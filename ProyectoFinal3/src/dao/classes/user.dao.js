@@ -201,7 +201,7 @@ export default class User {
         }
     }
 
-    adminAsignaRol = async (uid, nuevoRol) => {
+    adminAsignaRol = async (uid) => {
         try {
             const user = await userModel.findById({ _id: uid })
 
@@ -214,18 +214,30 @@ export default class User {
                 })
             }
 
-            if (nuevoRol != "user" && nuevoRol != "premium" && nuevoRol != "admin") {
+            return user
+
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+    }
+
+    userRender = async (uid) => {
+        try {
+            console.log(uid)
+            const user = await userModel.findById({ _id: uid })
+
+
+            console.log(user)
+
+            if (!user) {
                 return CustomError.createError({
-                    name: "Rol de usuario no reconocido",
-                    cause: asignarRolErrorInfo(),
-                    message: `El rol del usuario solo puede ser "user", "premium" o "admin"`,
+                    name: "Usuario no encontrado en la DB",
+                    cause: buscarUsuarioErrorInfo(uid),
+                    message: "No hubo coincidencias",
                     code: EErrors.INVALID_PARAMS
                 })
             }
-
-            user.role = nuevoRol
-
-            await user.save()
 
             return user
 
@@ -416,6 +428,28 @@ export default class User {
 
 
             return users
+
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+    }
+
+    eliminarUsuario = async (uid) => {
+        try {
+            console.log(uid)
+            const user = await userModel.findByIdAndDelete(uid)
+
+            if (!user) {
+                return CustomError.createError({
+                    name: "Usuario no encontrado en la DB",
+                    cause: buscarUsuarioErrorInfo(uid),
+                    message: "No hubo coincidencias para eliminar",
+                    code: EErrors.INVALID_PARAMS
+                })
+            }
+
+            return user
 
         } catch (error) {
             console.error(error);

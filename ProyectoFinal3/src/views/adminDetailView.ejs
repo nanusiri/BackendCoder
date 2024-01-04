@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="contenedorUser" data-user-id="<%= user._id %>">
+        <h3 class="user">User: <%= user._id %>
+        </h3>
+        <p>Nombre: <%= user.first_name %>
+                <%= user.last_name %>
+        </p>
+        <p>Email: <%= user.email %>
+        </p>
+        <p>Rol: <%= user.role %>
+        </p>
+        <button id="eliminarUsuario">Eliminar Usuario</button>
+    </div>
+
+    <script>
+        document.getElementById('eliminarUsuario').addEventListener('click', function (event) {
+            event.preventDefault()
+
+            const userId = document.getElementById('contenedorUser').getAttribute('data-user-id')
+            console.log(userId)
+            eliminarUsuario(userId)
+        })
+
+        async function eliminarUsuario(userId) {
+            console.log('Eliminar usuario:', userId)
+            try {
+                const response = await fetch(`/api/admin/${userId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+
+                const data = await response.json()
+
+                if (data.status === 'success') {
+                    window.location.href = '/api/admin'
+                    console.log('Usuario eliminado con éxito')
+                } else {
+                    console.error('Error al eliminar el usuario:', data.error);
+                }
+            } catch (error) {
+                console.error('Error de red al eliminar el usuario:', error);
+            }
+        }    
+    </script>
+</body>
+
+</html>

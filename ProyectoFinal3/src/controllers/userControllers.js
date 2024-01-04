@@ -61,15 +61,22 @@ export const cambiarRol = async (req, res) => {
     res.send({ status: "success", payload: result })
 }
 
-export const adminCambiaRol = async (req, res) => {
-    const { uid, nuevoRol } = req.body
+export const adminView = async (req, res) => {
+    const { uid } = req.body
 
-    console.log(nuevoRol)
-
-    let result = await userService.adminAsignaRol(uid, nuevoRol)
+    let result = await userService.adminAsignaRol(uid)
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
-    res.send({ status: "success", payload: result })
+    res.redirect(`/api/admin/${uid}`)
 }
+
+export const adminDetailView = async (req, res) => {
+    const { uid } = req.params;
+
+    let result = await userService.userRender(uid)
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+    res.render('adminDetailView', { user: result }); //El {user: result} sirve para mandar la info del usuario
+};
+
 
 export const upload = async (req, res) => {
     if (!req.files) {
@@ -126,6 +133,17 @@ export const obtenerUsuarios = async (req, res) => {
 export const eliminarUsuarios = async (req, res) => {
 
     let result = await userService.eliminarUsuariosPorInactividad()
+
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+
+    res.send({ status: "success", payload: result })
+}
+
+export const eliminarUsuario = async (req, res) => {
+
+    const { uid } = req.params
+
+    let result = await userService.eliminarUsuario(uid)
 
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
 

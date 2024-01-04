@@ -1,3 +1,4 @@
+//RESTABLECER CONTRASEÑA
 document.getElementById('resetPasswordForm').addEventListener('submit', function (event) {
     event.preventDefault()
 
@@ -10,6 +11,7 @@ document.getElementById('resetPasswordForm').addEventListener('submit', function
     this.submit()
 })
 
+//INICIAR SESION
 document.getElementById('iniciarSesion').addEventListener('submit', function (event) {
     event.preventDefault()
 
@@ -20,13 +22,14 @@ document.getElementById('iniciarSesion').addEventListener('submit', function (ev
     this.submit()
 })
 
-document.getElementById('cambiarRol').addEventListener('submit', function (event) {
-    event.prevent
-    Default()
+//ENCONTRAR USUARIO
+document.getElementById('buscarUsuario').addEventListener('submit', function (event) {
+    event.preventDefault()
 
-    let actionUrl = '/api/admin/cambiarRol'
+    let actionUrl = '/api/admin'
 
     this.action = actionUrl
 
     this.submit()
 })
+

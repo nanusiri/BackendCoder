@@ -3,6 +3,15 @@ import EErrors from "../../services/errors/enums.js";
 import { buscarPorIdErrorInfo, noAuth, noAuthOwner, nuevoProductoErrorInfo } from "../../services/errors/info.js";
 import ProductDTO from "../DTOs/product.dto.js";
 import productModel from "../models/product.model.js";
+import nodemailer from "nodemailer"
+
+const transporter = nodemailer.createTransport({
+    service: "Gmail",
+    auth: {
+        user: "nanualejandro@gmail.com",
+        pass: "xkjh hlev pysq cvvz"
+    }
+})
 
 export default class Product {
     obtenerProductos = async (limit, page, sort, query) => {
@@ -159,6 +168,27 @@ export default class Product {
                     code: EErrors.NO_AUTH
                 })
             }
+
+            const mailOptions = {
+                from: "nanualejandro@gmail.com",
+                to: product.productOwner,
+                subject: "Producto Eliminado",
+                html: `
+                        <div>
+                            <h1>Hola ${user.first_name}</h1>
+                            <p>El producto: ${product.productTitle}, del que es dueño, ha sido eliminado de nuestra plataforma</p>
+                        </div>
+                        `
+            }
+
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log(error)
+                } else {
+                    console.log("correo enviado", info.response)
+                }
+            })
+
 
             product.deleteOne()
 

@@ -1,7 +1,7 @@
 import express from "express"
 const router = express.Router()
-import { register, login, cambiarContrasenia, contraseniaOlvidada, cambiarRol, logout, upload, uploadProfileImage, uploadProductImage, obtenerUsuarios, eliminarUsuarios, adminView, adminDetailView, eliminarUsuario } from "../controllers/userControllers.js"
-import { uploader } from "../utils.js"
+import { register, login, cambiarContrasenia, contraseniaOlvidada, cambiarRol, logout, upload, uploadProfileImage, uploadProductImage, obtenerUsuarios, eliminarUsuarios, adminView, adminDetailView, eliminarUsuario, adminCambiaRol } from "../controllers/userControllers.js"
+import { adminAuth, uploader } from "../utils.js"
 
 router.post("/register", register)
 
@@ -29,13 +29,14 @@ router.post("/api/users/:uid/productImage/:pid", uploader.single('productImage')
 router.get("/api/users", obtenerUsuarios)
 router.delete("/api/users", eliminarUsuarios)
 
-//router.get()
-router.post("/api/admin", adminView)
-router.get("/api/admin", (req, res) => {
+//API ADMIN
+router.post("/api/admin", adminAuth, adminView)
+router.get("/api/admin", adminAuth, (req, res) => {
     res.render('adminFunctions')
 })
-router.get("/api/admin/:uid", adminDetailView)
-router.delete("/api/admin/:uid", eliminarUsuario)
+router.get("/api/admin/:uid", adminAuth, adminDetailView)
+router.delete("/api/admin/:uid", adminAuth, eliminarUsuario)
+router.patch("/api/admin/cambiarRol/:uid", adminAuth, adminCambiaRol)
 
 
 

@@ -18,40 +18,89 @@
         </p>
         <p>Rol: <%= user.role %>
         </p>
+        <hr>
+        <label for="selectRol">Cambiar Rol:</label>
+        <select name="selectRol" id="selectRol">
+            <option value="user">Usuario</option>
+            <option value="premium">Usuario Premium</option>
+            <option value="admin">Administrador</option>
+        </select>
+        <button id="cambiarRol">Cambiar Rol</button>
+        <hr>
         <button id="eliminarUsuario">Eliminar Usuario</button>
     </div>
 
     <script>
-        document.getElementById('eliminarUsuario').addEventListener('click', function (event) {
-            event.preventDefault()
+        document.addEventListener('DOMContentLoaded', function () {
+            //CAMBIAR ROL ADD EVENT
+            document.getElementById('cambiarRol').addEventListener('click', function (event) {
+                event.preventDefault();
 
-            const userId = document.getElementById('contenedorUser').getAttribute('data-user-id')
-            console.log(userId)
-            eliminarUsuario(userId)
-        })
+                const nuevoRol = document.getElementById('selectRol').value;
 
-        async function eliminarUsuario(userId) {
-            console.log('Eliminar usuario:', userId)
-            try {
-                const response = await fetch(`/api/admin/${userId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                })
+                const userId = document.getElementById('contenedorUser').getAttribute('data-user-id');
 
-                const data = await response.json()
+                cambiarRolUsuario(userId, nuevoRol);
+            });
 
-                if (data.status === 'success') {
-                    window.location.href = '/api/admin'
-                    console.log('Usuario eliminado con éxito')
-                } else {
-                    console.error('Error al eliminar el usuario:', data.error);
+            //ELIMINAR USUARIO ADD EVENT
+            document.getElementById('eliminarUsuario').addEventListener('click', function (event) {
+                event.preventDefault()
+
+                const userId = document.getElementById('contenedorUser').getAttribute('data-user-id')
+                console.log(userId)
+                eliminarUsuario(userId)
+            })
+
+            //FUNCION CAMBIAR ROL
+            async function cambiarRolUsuario(userId, nuevoRol) {
+                try {
+                    const response = await fetch(`/api/admin/cambiarRol/${userId}`, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ nuevoRol })
+                    });
+
+                    const data = await response.json();
+
+                    if (data.status === 'success') {
+                        // Recargar la página para reflejar el cambio
+                        window.location.reload();
+                        console.log('Rol de usuario cambiado con éxito');
+                    } else {
+                        console.error('Error al cambiar el rol del usuario:', data.error);
+                    }
+                } catch (error) {
+                    console.error('Error de red al cambiar el rol del usuario:', error);
                 }
-            } catch (error) {
-                console.error('Error de red al eliminar el usuario:', error);
             }
-        }    
+
+            //FUNCION ELIMINAR USUARIO
+            async function eliminarUsuario(userId) {
+                console.log('Eliminar usuario:', userId)
+                try {
+                    const response = await fetch(`/api/admin/${userId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    })
+
+                    const data = await response.json()
+
+                    if (data.status === 'success') {
+                        window.location.href = '/api/admin'
+                        console.log('Usuario eliminado con éxito')
+                    } else {
+                        console.error('Error al eliminar el usuario:', data.error);
+                    }
+                } catch (error) {
+                    console.error('Error de red al eliminar el usuario:', error);
+                }
+            }
+        })    
     </script>
 </body>
 

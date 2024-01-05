@@ -64,7 +64,7 @@ export const cambiarRol = async (req, res) => {
 export const adminView = async (req, res) => {
     const { uid } = req.body
 
-    let result = await userService.adminAsignaRol(uid)
+    let result = await userService.buscadorAdmin(uid)
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
     res.redirect(`/api/admin/${uid}`)
 }
@@ -144,6 +144,18 @@ export const eliminarUsuario = async (req, res) => {
     const { uid } = req.params
 
     let result = await userService.eliminarUsuario(uid)
+
+    if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+
+    res.send({ status: "success", payload: result })
+}
+
+export const adminCambiaRol = async (req, res) => {
+
+    const { uid } = req.params
+    const { nuevoRol } = req.body
+
+    let result = await userService.adminCambiaRol(uid, nuevoRol)
 
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
 

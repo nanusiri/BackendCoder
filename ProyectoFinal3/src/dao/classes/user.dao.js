@@ -201,7 +201,7 @@ export default class User {
         }
     }
 
-    adminAsignaRol = async (uid) => {
+    buscadorAdmin = async (uid) => {
         try {
             const user = await userModel.findById({ _id: uid })
 
@@ -437,7 +437,7 @@ export default class User {
 
     eliminarUsuario = async (uid) => {
         try {
-            console.log(uid)
+
             const user = await userModel.findByIdAndDelete(uid)
 
             if (!user) {
@@ -448,6 +448,32 @@ export default class User {
                     code: EErrors.INVALID_PARAMS
                 })
             }
+
+            return user
+
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+    }
+
+    adminCambiaRol = async (uid, nuevoRol) => {
+        try {
+
+            const user = await userModel.findById(uid)
+
+            if (!user) {
+                return CustomError.createError({
+                    name: "Usuario no encontrado en la DB",
+                    cause: buscarUsuarioErrorInfo(uid),
+                    message: "No hubo coincidencias para eliminar",
+                    code: EErrors.INVALID_PARAMS
+                })
+            }
+
+            user.role = nuevoRol
+
+            await user.save()
 
             return user
 

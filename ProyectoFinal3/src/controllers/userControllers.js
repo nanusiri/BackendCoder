@@ -1,4 +1,3 @@
-import userModel from "../dao/models/user.model.js"
 import User from "../dao/classes/user.dao.js"
 
 const userService = new User()
@@ -9,7 +8,7 @@ export const register = async (req, res) => {
     let result = await userService.registrarUsuario(first_name, last_name, email, age, password, role, phone)
 
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
-    res.send({ status: "success", result: result })
+    res.redirect('/login')
 }
 
 export const login = async (req, res) => {
@@ -20,7 +19,7 @@ export const login = async (req, res) => {
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
 
     req.session.user = result
-    res.send({ status: "success", result: result })
+    res.redirect('/api/products')
 }
 
 export const logout = async (req, res) => {

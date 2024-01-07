@@ -11,11 +11,14 @@ const cartSchema = new mongoose.Schema({
                     type: mongoose.SchemaTypes.ObjectId,
                     ref: "productos"
                 },
-                quantity: { type: Number }
+                nombre: { type: String },
+                quantity: { type: Number },
+                subtotal: { type: Number }
             }
         ],
         default: []
-    }
+    },
+    total: { type: Number }
 })
 
 cartSchema.pre("find", function () {

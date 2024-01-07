@@ -14,52 +14,33 @@ const transporter = nodemailer.createTransport({
 })
 
 export default class Product {
-    obtenerProductos = async (limit, page, sort, query) => {
+    obtenerProductos = async (limit, page, sort, category) => {
         try {
-
             const options = {
                 limit: parseInt(limit),
-                page: parseInt(page)
-            }
-
-            const queryOptions = {}
-
-            if (query) {
-                queryOptions.productCategory = query
-            }
-
-            const sortOptions = {}
+                page: parseInt(page),
+                sort: {}
+            };
 
             if (sort === 'desc') {
-                sortOptions.productPrice = -1
+                options.sort.productPrice = -1;
             } else if (sort === 'asc') {
-                sortOptions.productPrice = 1
+                options.sort.productPrice = 1;
             }
 
-            if (Object.keys(queryOptions).length === 0 && Object.keys(sortOptions).length === 0) {
-                const products = await productModel.paginate({}, { ...options })
+            const queryOptions = {};
 
-                return products
-            } else if (Object.keys(queryOptions).length === 0) {
-                const products = await productModel.paginate({}, { ...options, sort: sortOptions })
-
-                return products
-            } else if (Object.keys(sortOptions).length === 0) {
-                if (query != "electronicos" && query != "bazar") {
-                    return res.status(404).send({ status: "Error", error: "Su query no coincide con nuestra DB" })
-                }
-                const products = await productModel.paginate(queryOptions, { ...options })
-
-                return products
-            } else {
-                if (query != "electronicos" && query != "bazar") {
-                    return res.status(404).send({ status: "Error", error: "Su query no coincide con nuestra DB" })
-                }
-                const products = await productModel.paginate(queryOptions, { ...options, sort: sortOptions })
-
-                return products
+            if (category) {
+                queryOptions.productCategory = category;
             }
 
+            const products = await productModel.paginate(queryOptions, options);
+
+            if (products.docs.length === 0) {
+                return { error: `No hay productos en la categoría: ${category}` };
+            }
+
+            return products
         } catch (error) {
             console.error(error);
             return null

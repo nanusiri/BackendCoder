@@ -43,14 +43,7 @@
                 cambiarRolUsuario(userId, nuevoRol);
             });
 
-            //ELIMINAR USUARIO ADD EVENT
-            document.getElementById('eliminarUsuario').addEventListener('click', function (event) {
-                event.preventDefault()
 
-                const userId = document.getElementById('contenedorUser').getAttribute('data-user-id')
-                console.log(userId)
-                eliminarUsuario(userId)
-            })
 
             //FUNCION CAMBIAR ROL
             async function cambiarRolUsuario(userId, nuevoRol) {
@@ -76,6 +69,15 @@
                     console.error('Error de red al cambiar el rol del usuario:', error);
                 }
             }
+
+            //ELIMINAR USUARIO ADD EVENT
+            document.getElementById('eliminarUsuario').addEventListener('click', function (event) {
+                event.preventDefault()
+
+                const userId = document.getElementById('contenedorUser').getAttribute('data-user-id')
+                console.log(userId)
+                eliminarUsuario(userId)
+            })
 
             //FUNCION ELIMINAR USUARIO
             async function eliminarUsuario(userId) {

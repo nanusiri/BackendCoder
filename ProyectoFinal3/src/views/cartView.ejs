@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Carrito</h1>
+
+    <div id="contenedorCart" data-cart-id="<%= result._id %>">
+        <% if (result.productos.length>0){%>
+            <ul>
+                <% result.productos.forEach(producto=> { %>
+                    <li>
+                        <strong>
+                            <%= producto.nombre %>
+                        </strong>
+                        <p>Unidades: <%= producto.quantity %>
+                        </p>
+                        <strong>
+                            Subtotal: $<%= producto.subtotal %>
+                        </strong>
+                    </li>
+                    <hr>
+                    <% }); %>
+            </ul>
+
+            <div>
+                <strong>
+                    Total: $<%= result.total %>
+                </strong>
+                <button id="finalizarCompra">Finalizar Compra</button>
+            </div>
+
+            <% } else { %>
+                <p>Tu carrito esta vacio.</p>
+                <% } %>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('finalizarCompra').addEventListener('click', function (event) {
+                event.preventDefault()
+
+                const cartId = document.getElementById('contenedorCart').getAttribute('data-cart-id')
+
+                finalizarCompra(cartId)
+            })
+
+            async function finalizarCompra(cartId) {
+                try {
+                    const response = await fetch(`/api/carts/${cartId}/purchase`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    })
+
+                    const data = await response.json()
+
+                    if (data.result === 'success') {
+                        window.location.reload()
+                        console.log("Compra finalizada con exito")
+                    } else {
+                        console.error('Error al finalizar su compra', data.error)
+                    }
+                } catch (error) {
+                    console.log('Error de la red al finalizar su compra:', error)
+                }
+            }
+        })
+    </script>
+</body>
+
+
+</html>

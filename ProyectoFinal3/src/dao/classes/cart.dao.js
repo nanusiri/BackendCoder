@@ -10,6 +10,8 @@ export default class Cart {
         try {
 
             const result = await cartModel.create(titularCarrito)
+
+
             return result
 
         } catch (error) {
@@ -28,6 +30,20 @@ export default class Cart {
             if (!cart) {
                 return res.status(404).json({ error: 'Carrito no encontrado' })
             }
+
+            const arrayProductos = cart.productos
+
+            let total = arrayProductos.reduce(function (acumulador, producto) {
+                return acumulador + producto.subtotal
+            }, 0)
+
+            cart.total = total
+
+            console.log(total)
+
+            await cart.save()
+
+            console.log(cart)
 
             return cart
         } catch (error) {
@@ -59,10 +75,13 @@ export default class Cart {
 
             const existingProductIndex = productos.findIndex(objeto => objeto.producto.equals(pid))
 
+            const subtotal = product.productPrice * quantity
+
             if (existingProductIndex !== -1) {
                 productos[existingProductIndex].quantity += quantity
+                productos[existingProductIndex].subtotal += product.productPrice * quantity
             } else {
-                cart.productos.push({ producto: pid, quantity: quantity })
+                cart.productos.push({ producto: pid, nombre: product.productTitle, quantity: quantity, subtotal: subtotal })
             }
 
             await cart.save()

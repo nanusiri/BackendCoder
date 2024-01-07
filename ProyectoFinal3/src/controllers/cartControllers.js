@@ -27,7 +27,7 @@ export const obtenerCarrito = async (req, res) => {
         return res.status(500).send({ status: "Error", error: "Algo salió mal" })
     }
 
-    res.send({ result: "success", payload: result })
+    res.render('cartView', { result })
 }
 
 

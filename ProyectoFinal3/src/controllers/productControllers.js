@@ -5,14 +5,14 @@ import { generateProduct } from "../utils.js"
 const productService = new Product()
 
 export const obtenerProductos = async (req, res) => {
-    const { limit = 10, page = 1, sort, query } = req.query
+    const { limit = 10, page = 1, sort, category } = req.query
     if (isNaN(limit && page)) {
         return res.status(404).send({ status: "Error", error: "Limit y page tienen que ser un numero" })
     }
 
-    let result = await productService.obtenerProductos(limit, page, sort, query)
+    let result = await productService.obtenerProductos(limit, page, sort, category)
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
-    res.send({ status: "success", result: result })
+    res.render('products', { result })
 }
 
 export const obtenerXProducto = async (req, res) => {

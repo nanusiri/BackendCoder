@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 })
 
 const TWILIO_ACCOUNT_SID = "AC707d219ce2c5dd26ba5badaef23ce3df"
-const TWILIO_AUTH_TOKEN = "3c8ba847f7e1b55987da05149f52aca8"
+const TWILIO_AUTH_TOKEN = "b9b2744b0b2a0c2e51cb3a3d1242a78f"
 const TWILIO_SMS_NUMBER = "+12052094852"
 
 const client = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)

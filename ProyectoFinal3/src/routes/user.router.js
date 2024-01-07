@@ -4,6 +4,9 @@ import { register, login, cambiarContrasenia, contraseniaOlvidada, cambiarRol, l
 import { adminAuth, uploader } from "../utils.js"
 
 router.post("/register", register)
+router.get("/register", (req, res) => {
+    res.render('register')
+})
 
 router.post("/login", login)
 router.get("/login", (req, res) => {

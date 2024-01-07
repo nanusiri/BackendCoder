@@ -1,8 +1,9 @@
 import cartModel from "../models/cart.model.js";
 import productModel from "../models/product.model.js";
 import CustomError from "../../services/errors/CustomError.js";
-import { agregarAlCarritoErrorInfo } from "../../services/errors/info.js";
+import { agregarAlCarritoErrorInfo, buscarPorIdErrorInfo, noCart } from "../../services/errors/info.js";
 import EErrors from "../../services/errors/enums.js";
+import userModel from "../models/user.model.js";
 
 
 export default class Cart {
@@ -39,11 +40,7 @@ export default class Cart {
 
             cart.total = total
 
-            console.log(total)
-
             await cart.save()
-
-            console.log(cart)
 
             return cart
         } catch (error) {
@@ -52,15 +49,31 @@ export default class Cart {
         }
     }
 
-    agregarProducto = async (cid, pid, quantity, user) => {
+    agregarProducto = async (pid, quantity, user) => {
         try {
+            const cid = user.cart
 
             const cart = await cartModel.findById({ _id: cid })
             const product = await productModel.findById({ _id: pid })
 
             if (!cart) {
-                return res.status(404).json({ error: 'Carrito no encontrado' })
+                return CustomError.createError({
+                    name: "El usuario no tiene carrito creado",
+                    cause: noCart(product),
+                    message: "Esta intentando agregar un producto a un carrito que no existe",
+                    code: EErrors.NO_AUTH
+                })
             }
+
+            if (!product) {
+                return CustomError.createError({
+                    name: "El producto no existe en nuestra DB",
+                    cause: buscarPorIdErrorInfo(pid),
+                    message: "Esta buscando un producto con un id que no tiene ninguna coincidencia en nuestra DB",
+                    code: EErrors.NO_AUTH
+                })
+            }
+
 
             if (user.email == product.productOwner) {
                 return CustomError.createError({

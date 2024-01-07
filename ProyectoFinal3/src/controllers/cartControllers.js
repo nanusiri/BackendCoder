@@ -34,12 +34,12 @@ export const obtenerCarrito = async (req, res) => {
 
 
 export const agregarProducto = async (req, res) => {
-    const cid = req.params.cid
+    const user = req.session.user
     const pid = req.params.pid
     const quantity = parseInt(req.body.quantity || 1)
-    const user = req.session.user
 
-    let result = await cartService.agregarProducto(cid, pid, quantity, user)
+
+    let result = await cartService.agregarProducto(pid, quantity, user)
     if (!result) return res.status(500).send({ status: "Error", error: "Algo salió mal" })
 
     res.send({ result: "success", payload: result })

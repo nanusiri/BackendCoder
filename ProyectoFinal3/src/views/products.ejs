@@ -31,12 +31,14 @@
         <button type="submit">Filtrar</button>
     </form>
 
+    <!-- <a href="/api/carts/<%= user.cart %>"></a> -->
+
     <!-- Lista de Productos -->
     <div>
         <% if (result.docs.length> 0) { %>
             <ul>
                 <% result.docs.forEach(producto=> { %>
-                    <li id="productDetail" data-product-id="<%= producto.producto%>">
+                    <li id="productDetail_<%= producto._id %>" data-product-id="<%= producto._id%>">
                         <strong>
                             <%= producto.productTitle %>
                         </strong>
@@ -46,12 +48,12 @@
                         </p>
 
                         <div style="display: flex; ">
-                            <button onclick="decrementar('contador')">-</button>
-                            <p id="contador" style="margin: 0 10px; font-size: 20px;">1</p>
-                            <button onclick="incrementar('contador')">+</button>
+                            <button onclick="decrementar('contador_<%= producto._id %>')">-</button>
+                            <p id="contador_<%= producto._id %>" style="margin: 0 10px; font-size: 20px;">1</p>
+                            <button onclick="incrementar('contador_<%= producto._id %>')">+</button>
                         </div>
                         <br>
-                        <button id="agregarCarrito">Agregar al carrito</button>
+                        <button id="agregarCarrito_<%= producto._id %>">Agregar al carrito</button>
                     </li>
                     <hr>
                     <% }); %>
@@ -89,21 +91,44 @@
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            document.getElementById('agregarCarrito').addEventListener('click', function (event) {
-                event.preventDefault()
+            // Obtener todos los botones y contadores
+            const agregarCarritoButtons = document.querySelectorAll('[id^="agregarCarrito_"]')
+            const contadores = document.querySelectorAll('[id^="contador_"]')
+            console.log(agregarCarritoButtons)
 
-                const cantidad = document.getElementById('contador').textContent
+            // Asignar manejadores de eventos a cada botón
+            agregarCarritoButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault()
 
-                const pid = document.getElementById('productDetail').getAttribute('data-product-id')
+                    const pid = this.id.split('_')[1] //Por que el [1]?
+                    console.log(pid)
 
-                agregarAlCarrito(pid, cantidad)
+                    const quantity = document.getElementById(`contador_${pid}`).textContent
+
+                    agregarAlCarrito(pid, quantity)
+                })
             })
 
-            async function agregarAlCarrito(pid, cantidad) {
+            async function agregarAlCarrito(pid, quantity) {
                 try {
-                    const response = await fetch(`/api/carts/:cid/product/${pid}`)
-                } catch (error) {
+                    const response = await fetch(`/api/carts/product/${pid}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ quantity })
+                    })
 
+                    const data = await response.json();
+
+                    if (data.result === 'success') {
+                        console.log('Producto Agregado Exitosamente');
+                    } else {
+                        console.error('Error al agregar el producto al carrito:', data.error);
+                    }
+                } catch (error) {
+                    console.error('Error de red al agregar el producto al carrito:', error)
                 }
             }
         })    

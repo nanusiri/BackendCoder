@@ -8,6 +8,7 @@ export const register = async (req, res) => {
     let result = await userService.registrarUsuario(first_name, last_name, email, age, password, role, phone)
 
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
+
     res.redirect('/login')
 }
 

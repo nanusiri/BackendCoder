@@ -16,12 +16,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'user'
     },
-    cart: [
-        {
-            type: mongoose.SchemaTypes.ObjectId,
-            ref: "carts"
-        }
-    ],
+    cart: {
+        type: mongoose.SchemaTypes.ObjectId,
+        ref: "carts"
+    },
     resetToken: { type: String, maxlength: 1000 },
     documents: {
         type: [

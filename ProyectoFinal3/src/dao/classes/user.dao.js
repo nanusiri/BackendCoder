@@ -5,6 +5,7 @@ import EErrors from "../../services/errors/enums.js"
 import nodemailer from "nodemailer"
 import jwt from "jsonwebtoken"
 import productModel from "../models/product.model.js"
+import cartModel from "../models/cart.model.js"
 
 const JWT_SECRET = 'tu_secreto_super_seguro'
 
@@ -19,6 +20,8 @@ const transporter = nodemailer.createTransport({
 export default class User {
     registrarUsuario = async (first_name, last_name, email, age, password, role, phone) => {
         try {
+            const cart = await cartModel.create({ titularCarrito: email })
+
             const newUser = {
                 first_name,
                 last_name,
@@ -26,7 +29,8 @@ export default class User {
                 age,
                 password,
                 role,
-                phone
+                phone,
+                cart
             }
 
             let result = await userModel.create(newUser)
@@ -39,7 +43,8 @@ export default class User {
 
     loguearUsuario = async (email, password) => {
         try {
-            const user = await userModel.findOne({ email }, { first_name: 1, last_name: 1, age: 1, password: 1, email: 1, role: 1, phone: 1 })
+            const user = await userModel.findOne({ email }, { first_name: 1, last_name: 1, age: 1, password: 1, email: 1, role: 1, phone: 1, cart: 1 })
+
 
             if (user.password === password) {
                 user.last_connection = new Date()

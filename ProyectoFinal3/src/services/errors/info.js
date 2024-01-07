@@ -41,3 +41,7 @@ export const buscarUsuariosErrorInfo = () => {
 export const asignarRolErrorInfo = () => {
     return `Esta asignandole un rol a un usuario que no es renocido como rol en nuestra base de datos`
 }
+
+export const noCart = () => {
+    return `El cliente quiere agregar un producto al carrito pero no tiene carrito, tiene que actualizar su perfil`
+}

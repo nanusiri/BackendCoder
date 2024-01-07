@@ -18,7 +18,9 @@ router.post("/api/carts", userAuth, crearCarrito)
 
 router.get('/api/carts/:cid', addLogger, obtenerCarrito)
 
-router.post('/api/carts/:cid/product/:pid', userAuth, agregarProducto)
+//router.post('/api/carts/:cid/product/:pid', userAuth, agregarProducto)
+
+router.post('/api/carts/product/:pid', userAuth, agregarProducto)
 
 router.put('/api/carts/:cid', actualizarCarrito) //Nunca entendi la funcion de este endpoint
 

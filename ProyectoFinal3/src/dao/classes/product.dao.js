@@ -99,18 +99,6 @@ export default class Product {
     }
 
     actualizarProducto = async (pid, updateFields) => {
-        /* try {
-
-            const result = await productModel.updateOne({ _id: pid }, { $set: updateFields })
-
-            let product = await productModel.findById({ _id: pid })
-
-            return product
-
-        } catch (error) {
-            console.error(error);
-            return null
-        } */
         try {
             const options = { new: true }; // Devolver el documento actualizado
 

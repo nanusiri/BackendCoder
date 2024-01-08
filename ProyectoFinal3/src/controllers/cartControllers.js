@@ -105,5 +105,16 @@ export const finalizarCompra = async (req, res) => {
 
     if (!result) return res.status(500).send({ status: "Error", error: "Algo salió mal" })
 
-    res.send({ result: "success", payload: result })
+    res.redirect(`/api/carts/${result._id}/ticket`)
 }
+
+export const renderTicket = async (req, res) => {
+    const tid = req.params.tid
+
+    let result = await ticketService.obtenerTicket(tid)
+
+    if (!result) return res.status(500).send({ status: "Error", error: "Algo salió mal" })
+
+    res.render('ticketView', { result })
+}
+

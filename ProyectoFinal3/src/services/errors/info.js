@@ -1,5 +1,5 @@
 export const buscarPorIdErrorInfo = (pid) => {
-    return `El pid: ${pid}, no coincide con ningun producto en nuestra base de datos`
+    return `El id: ${pid}, no coincide con ningun producto en nuestra base de datos`
 }
 
 export const buscarUsuarioErrorInfo = (data) => {

@@ -98,7 +98,6 @@
             // Obtener todos los botones y contadores
             const agregarCarritoButtons = document.querySelectorAll('[id^="agregarCarrito_"]')
             const contadores = document.querySelectorAll('[id^="contador_"]')
-            console.log(agregarCarritoButtons)
 
             // Asignar manejadores de eventos a cada botón
             agregarCarritoButtons.forEach(button => {
@@ -160,7 +159,7 @@
                         window.location.href = `/api/carts/${cid}`
                         console.log("Obtencion de carrito exitosa")
                     } else {
-                        console.error('Error al obtener su carrito', data.error)
+                        console.error('Error al obtener su carrito')
                     }
                 } catch (error) {
                     console.log('Error de la red al obtener su carrito:', error)

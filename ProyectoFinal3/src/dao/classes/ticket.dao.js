@@ -5,7 +5,7 @@ import nodemailer from "nodemailer"
 import twilio from "twilio"
 import CustomError from "../../services/errors/CustomError.js";
 import EErrors from "../../services/errors/enums.js";
-import { noStock } from "../../services/errors/info.js";
+import { buscarPorIdErrorInfo, noStock } from "../../services/errors/info.js";
 
 const transporter = nodemailer.createTransport({
     service: "Gmail",
@@ -140,5 +140,28 @@ El codigo de tu compra es: ${result.code}`
             console.error(error);
             return null
         }
+    }
+
+    obtenerTicket = async (tid) => {
+        try {
+
+            const ticket = await ticketModel.findById({ _id: tid })
+
+
+            if (!ticket) {
+                return CustomError.createError({
+                    name: "No existe ticket con el id proporcionado",
+                    cause: buscarPorIdErrorInfo(tid),
+                    message: "No hubo coincidencias",
+                    code: EErrors.INVALID_PARAMS
+                })
+            }
+
+            return ticket
+        } catch (error) {
+            console.error(error);
+            return null
+        }
+
     }
 }

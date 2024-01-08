@@ -23,6 +23,7 @@
                         <strong>
                             Subtotal: $<%= producto.subtotal %>
                         </strong>
+                        <button id="btnEliminarProducto_<%= producto._id %>">Eliminar producto</button>
                     </li>
                     <hr>
                     <% }); %>
@@ -37,11 +38,82 @@
 
             <% } else { %>
                 <p>Tu carrito esta vacio.</p>
+                <button id="btnVolverComprar">Volver a comprar</button>
                 <% } %>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            const eliminarDelCarritoButtons = document.querySelectorAll('[id^="btnEliminarProducto_"]')
+
+            // Asignar manejadores de eventos a cada botón
+            eliminarDelCarritoButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault()
+
+                    const pid = this.id.split('_')[1]
+                    console.log(pid)
+
+                    const cartId = document.getElementById('contenedorCart').getAttribute('data-cart-id')
+
+                    eliminarDelCarrito(pid, cartId)
+                })
+            })
+
+            //Llamar al backend
+            async function eliminarDelCarrito(pid, cartId) {
+                try {
+                    const response = await fetch(`/api/carts/${cartId}/products/${pid}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    })
+
+                    const data = await response.json();
+                    console.log(data)
+
+                    if (data.result === 'success') {
+                        window.location.reload();
+                        console.log('Producto Eliminado Exitosamente');
+                    } else {
+                        console.error('Error al agregar el producto al carrito:', data.error);
+                    }
+                } catch (error) {
+                    console.error('Error de RED al agregar el producto al carrito:', error)
+                }
+            }
+
+            //Boton volver a comprar
+            document.getElementById('btnVolverComprar').addEventListener('click', function (event) {
+                event.preventDefault()
+
+
+                volverAProducts()
+            })
+
+            //Funcion volver a comprar
+            async function volverAProducts() {
+                try {
+                    const response = await fetch(`/api/products`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    })
+
+                    if (response.ok) {
+                        window.location.href = '/api/products'
+                        console.log("Vuelta a products finalizada con exito")
+                    } else {
+                        console.error('Error al volver a products')
+                    }
+                } catch (error) {
+                    console.log('Error de la RED al volver a products:', error)
+                }
+            }
+
+            //Boton finalizar compra
             document.getElementById('finalizarCompra').addEventListener('click', function (event) {
                 event.preventDefault()
 
@@ -50,6 +122,7 @@
                 finalizarCompra(cartId)
             })
 
+            //Funcion finalizar compra
             async function finalizarCompra(cartId) {
                 try {
                     const response = await fetch(`/api/carts/${cartId}/purchase`, {
@@ -59,13 +132,12 @@
                         },
                     })
 
-                    const data = await response.json()
-
-                    if (data.result === 'success') {
-                        window.location.reload()
+                    console.log(response)
+                    if (response.ok) {
+                        window.location.href = response.url
                         console.log("Compra finalizada con exito")
                     } else {
-                        console.error('Error al finalizar su compra', data.error)
+                        console.error('Error al finalizar su compra')
                     }
                 } catch (error) {
                     console.log('Error de la red al finalizar su compra:', error)

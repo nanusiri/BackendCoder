@@ -7,7 +7,8 @@ import {
     actualizarCantidad,
     eliminarProducto,
     eliminarCarrito,
-    finalizarCompra
+    finalizarCompra,
+    renderTicket
 } from "../controllers/cartControllers.js"
 import { userAuth } from "../utils.js"
 import { addLogger } from "../services/logger.js"
@@ -17,8 +18,6 @@ const router = Router()
 router.post("/api/carts", userAuth, crearCarrito)
 
 router.get('/api/carts/:cid', addLogger, obtenerCarrito)
-
-//router.post('/api/carts/:cid/product/:pid', userAuth, agregarProducto)
 
 router.post('/api/carts/product/:pid', userAuth, agregarProducto)
 
@@ -31,5 +30,7 @@ router.delete('/api/carts/:cid/products/:pid', eliminarProducto)
 router.delete('/api/carts/:cid', eliminarCarrito)
 
 router.post("/api/carts/:cid/purchase", finalizarCompra)
+
+router.get("/api/carts/:tid/ticket", renderTicket)
 
 export default router;

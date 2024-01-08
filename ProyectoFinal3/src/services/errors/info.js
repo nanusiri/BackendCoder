@@ -45,3 +45,7 @@ export const asignarRolErrorInfo = () => {
 export const noCart = () => {
     return `El cliente quiere agregar un producto al carrito pero no tiene carrito, tiene que actualizar su perfil`
 }
+
+export const noStock = (outOfStock) => {
+    return `El o los productos: ${outOfStock.map(item => item.producto)} no tienen stock para completar su compra`
+}

@@ -23,13 +23,18 @@ export default class Cart {
         }
     }
 
-    obtenerCarrito = async (id) => {
+    obtenerCarrito = async (cid) => {
         try {
 
-            const cart = await cartModel.findById({ _id: id })
+            const cart = await cartModel.findById({ _id: cid })
 
             if (!cart) {
-                return res.status(404).json({ error: 'Carrito no encontrado' })
+                return CustomError.createError({
+                    name: "El usuario no tiene carrito creado",
+                    cause: noCart(product),
+                    message: "Esta intentando agregar un producto a un carrito que no existe",
+                    code: EErrors.NO_AUTH
+                })
             }
 
             const arrayProductos = cart.productos

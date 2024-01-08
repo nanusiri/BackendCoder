@@ -8,7 +8,13 @@
 </head>
 
 <body>
+
     <h1>Lista de Productos</h1>
+
+    <button id="btnCarrito" style="margin-bottom: 10px; font-size: 20px;">
+        Ir alcarrito
+    </button>
+
 
     <!-- Controles de Filtrado, Paginación y Ordenamiento -->
     <form action="/api/products" method="GET">
@@ -30,8 +36,6 @@
 
         <button type="submit">Filtrar</button>
     </form>
-
-    <!-- <a href="/api/carts/<%= user.cart %>"></a> -->
 
     <!-- Lista de Productos -->
     <div>
@@ -101,7 +105,7 @@
                 button.addEventListener('click', function (event) {
                     event.preventDefault()
 
-                    const pid = this.id.split('_')[1] //Por que el [1]?
+                    const pid = this.id.split('_')[1]
                     console.log(pid)
 
                     const quantity = document.getElementById(`contador_${pid}`).textContent
@@ -110,6 +114,7 @@
                 })
             })
 
+            //Llamar al backend
             async function agregarAlCarrito(pid, quantity) {
                 try {
                     const response = await fetch(`/api/carts/product/${pid}`, {
@@ -131,7 +136,39 @@
                     console.error('Error de red al agregar el producto al carrito:', error)
                 }
             }
-        })    
+
+            //Boton ir al carrito
+            document.getElementById('btnCarrito').addEventListener('click', function (event) {
+                event.preventDefault()
+
+                const cid = '<%= user.cart %>'
+                console.log(cid)
+
+                obtenerCarrito(cid)
+            })
+
+            async function obtenerCarrito(cid) {
+                try {
+                    const response = await fetch(`/api/carts/${cid}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    })
+
+                    if (response.ok) {
+                        window.location.href = `/api/carts/${cid}`
+                        console.log("Obtencion de carrito exitosa")
+                    } else {
+                        console.error('Error al obtener su carrito', data.error)
+                    }
+                } catch (error) {
+                    console.log('Error de la red al obtener su carrito:', error)
+                }
+            }
+        })
+
+
     </script>
 </body>
 

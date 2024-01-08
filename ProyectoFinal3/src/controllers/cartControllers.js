@@ -28,6 +28,7 @@ export const obtenerCarrito = async (req, res) => {
     }
 
     res.render('cartView', { result })
+    /* res.send({ result: "success", payload: result }) */
 }
 
 

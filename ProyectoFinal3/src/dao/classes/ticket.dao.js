@@ -3,6 +3,9 @@ import Cart from './cart.dao.js'
 import Product from "./product.dao.js"
 import nodemailer from "nodemailer"
 import twilio from "twilio"
+import CustomError from "../../services/errors/CustomError.js";
+import EErrors from "../../services/errors/enums.js";
+import { noStock } from "../../services/errors/info.js";
 
 const transporter = nodemailer.createTransport({
     service: "Gmail",
@@ -63,8 +66,12 @@ export default class Ticket {
             }
 
             if (purchaseProducts.length <= 0) {
-                res.status(500).send({ status: "Error", error: "No hay suficiente stock para tu compra" })
-
+                return CustomError.createError({
+                    name: "Sin Stock",
+                    cause: noStock(outOfStock),
+                    message: "Esta intentando comprar productos que no tienen suficiente stock",
+                    code: EErrors.NO_AUTH
+                })
             }
 
             const newTicket = {}
@@ -80,11 +87,22 @@ export default class Ticket {
             newTicket.amount = amount
             newTicket.purchaser = titularCarrito
 
-            //Eliminar productos del carrito que ya se compraron y dejar los que no
+            //Eliminar productos del carrito que ya se compraron y dejar los que no 
             newTicket.unpurchasedProducts = outOfStock
             let carritoSinStock = cart.productos.filter(item => outOfStock.includes(item.producto))
             cart.productos = carritoSinStock
+            if (cart.productos.length > 0) {
+                let total = cart.productos.reduce(function (acumulador, producto) {
+                    return acumulador + producto.subtotal
+                }, 0)
+
+                cart.total = total
+
+            } else {
+                cart.total = 0
+            }
             await cart.save()
+
 
 
             let result = await ticketModel.create(newTicket)

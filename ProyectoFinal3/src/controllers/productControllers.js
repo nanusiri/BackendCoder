@@ -10,9 +10,11 @@ export const obtenerProductos = async (req, res) => {
         return res.status(404).send({ status: "Error", error: "Limit y page tienen que ser un numero" })
     }
 
+    const user = req.session.user
+
     let result = await productService.obtenerProductos(limit, page, sort, category)
     if (!result) return res.status(500).send({ status: "error", error: "Algo salió mal" })
-    res.render('products', { result })
+    res.render('products', { result, user })
 }
 
 export const obtenerXProducto = async (req, res) => {
